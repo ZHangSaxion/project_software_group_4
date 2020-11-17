@@ -17,6 +17,6 @@
 | Name        | Saxion Email           | Git name  |
 | ------------- |:-------------:| -----:|
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
-| Dylan Golberdinge van     | 478453@student.saxion.nl     |  //TODO |
+| Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |
 | Job Gravendeel  | 483993@student.saxion.nl      |    //TODO |
 | Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion | 
