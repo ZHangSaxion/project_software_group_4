@@ -9,6 +9,9 @@
 3.   [ ] Create the project plan  
 4.   [ ] Finish the project plan  
 
+---
+## Deadlines
+
 ---  
 ## Members  
 | Name        | Saxion Email           | Git name  |
