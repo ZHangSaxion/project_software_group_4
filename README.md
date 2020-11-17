@@ -19,7 +19,7 @@ Adding Dany to the group?
 
 ---  
 ## Members  
-| Name        | Saxion Email           | Git name  |
+| Name        | Saxion Email           | GitHub username  |
 | ------------- |:-------------:| -----:|
 | Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
