@@ -11,6 +11,10 @@
 5.   [ ] Finish the project plan  
 
 ---
+## To discuss next Dialy standup
+Adding Dany to the group?
+
+---
 ## Deadlines
 
 ---  
