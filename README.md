@@ -15,5 +15,5 @@
 | ------------- |:-------------:| -----:|
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
 | Dylan Golberdinge van     | //TODO     |  //TODO |
-| Job Gravendeel 4 | //TODO      |    //TODO |
+| Job Gravendeel  | //TODO      |    //TODO |
 | Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion | 
