@@ -37,3 +37,7 @@
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
 | Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |
 | Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion | 
+
+---
+## Software Design Concept
+![Exam](https://user-images.githubusercontent.com/59848681/99521405-abd9ac00-2994-11eb-8821-86cfd92f64bc.png)
