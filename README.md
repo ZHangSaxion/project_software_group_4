@@ -12,7 +12,7 @@
 
 ---
 ## To discuss next Dialy standup
-  [x] Adding Dany to the group?
+1.   [x] Adding Dany to the group?
 
 ---
 ## Deadlines
