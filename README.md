@@ -32,6 +32,7 @@
 ## Members  
 | Name        | Saxion Email           | GitHub username  |
 | ------------- |:-------------:| -----:|
+| Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |
 | Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
 | Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |
