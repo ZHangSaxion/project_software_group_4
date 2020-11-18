@@ -30,13 +30,13 @@
 
 ---  
 ## Members  
-| Name        | Saxion Email           | GitHub username  |
-| ------------- |:-------------:| -----:|
-| Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |
-| Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |
-| Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
-| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |
-| Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion | 
+| Name        | Saxion Email           | GitHub username  | Character(s)  |  
+| ------------- |:-------------:| -----:| -----:|
+| Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |   Database architect, Documentation writer, Application backend developer |
+| Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |  Management, Application frontend developer, Documentation writer |
+| Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev| Network, Security and API integration, System architect, Documentation writer|
+| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |    Application backend developer, Application frontend developer, Documentation writer |
+| Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion |     Application backend developer, Application frontend developer, Documentation writer, Scrum master | 
 
 ---
 ## Software Design Concept
