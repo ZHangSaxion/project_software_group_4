@@ -46,4 +46,4 @@
 
 ---
 ## Software Design Concept
-![Exam](https://user-images.githubusercontent.com/59848681/99521405-abd9ac00-2994-11eb-8821-86cfd92f64bc.png)
+![Exam (1)](https://user-images.githubusercontent.com/59848681/99647376-fb31e200-2a51-11eb-9af9-630bfa4e4e16.png)
