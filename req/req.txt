@@ -1,1 +1,23 @@
+User Requirements
 
+Nice graphs
+User interface
+
+Temperature in Celsius degrees
+ambient light 100% == 255
+pressure in millibars
+location of the sensor
+
+map with the sensor of the location or a list where you could click on
+see multiple data in one graph.
+graph timewise
+maybe estimate the data
+
+button to set a begin and end time.
+latest measurement
+
+first part is responsible for receiving the data and putting it in a database
+second part is for disclosing the data through an API
+third part, have several UI’s. 
+
+how many graphs… to discuss.
