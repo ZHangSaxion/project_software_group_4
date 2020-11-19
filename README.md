@@ -14,9 +14,6 @@
 5.   [ ] Finish the project plan  
 
 ---
-## To discuss next Dialy standup
-1.   [x] Adding Dany to the group?
-
 ## Here is check boxes for anyone who want to add some notes
 1.  [ ]  //
 2.  [ ]  //
