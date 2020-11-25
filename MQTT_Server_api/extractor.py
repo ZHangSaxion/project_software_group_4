@@ -42,6 +42,9 @@ class Extractor:
 	"""
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
+		self.order_VI_VI()
+	
+	def order_VI_VI(self):
 		self._running = False
 
 	"""
@@ -101,7 +104,9 @@ class Extractor:
 	"""
 
 	def get_message(self):
-		return self.__message;
+		msg = self.__message
+		self.__message = None
+		return msg;
 
 
 	"""
@@ -110,4 +115,3 @@ class Extractor:
 
 	def pretify(self, msg):
 		return json.dumps(json.loads(msg), indent=4, sort_keys=True)
-
