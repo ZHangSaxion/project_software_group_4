@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainModule = 'main' // name defined in module-info.java
+    mainModule = 'main'
     mainClass = 'main.HelloJavaFX'
 }
 
