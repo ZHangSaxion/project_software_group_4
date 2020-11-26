@@ -12,19 +12,6 @@
 5.   [x] Decided the chairman[1/1]: Dylan Golberdinge van    
 4.   [x] Create the project plan: [link here](https://docs.google.com/document/d/1AA9SQbSAX5Be-EN5OMCMpgCPGSsBk430/edit#heading=h.3j2qqm3)   
 5.   [ ] Finish the project plan  
-
----
-## Here is check boxes for anyone who want to add some notes
-1.  [ ]  //
-2.  [ ]  //
-3.  [ ]  //
-4.  [ ]  //
-5.  [ ]  //
-6.  [ ]  //
-
----
-## Deadlines
-
 ---  
 ## Members  
 | Name        | Saxion Email           | GitHub username  |
@@ -47,3 +34,11 @@
 ---
 ## Software Design Concept
 ![Exam (1)](https://user-images.githubusercontent.com/59848681/99647376-fb31e200-2a51-11eb-9af9-630bfa4e4e16.png)
+
+---
+## How to run in gradle  
+1.  you can setting the "mainClass" in build.gradle  
+![setting](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/classSetting.jpg?raw=true)  
+
+2.  type in "gradle run" to run the "mainClass" you set in Terminal  
+![toRun](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/runTheClass.jpg?raw=true)  
