@@ -14,8 +14,8 @@ TOPIC = [('project-software-engineering/devices/pywierden/#',0),
 		('project-software-engineering/devices/pysaxion/#',0),
 		('project-software-engineering/devices/pygarage/#',0),
 		('project-software-engineering/devices/pygronau/#',0)]
-flag = True
 
+flag = True
 
 def get_info(raw_json):
 		sj = json.loads(raw_json)
@@ -33,16 +33,12 @@ def get_info(raw_json):
 				"\npressure:" ,pressure, 
 				'\n}')
 
+with Extractor(PORT, TOPIC, HOST, password=PASSWORD, username=USERNAME) as ex:
+	while flag:
+		if (msg := ex.get_message()) != None:
+			get_info(msg)
 
-
-try:
-	with Extractor(PORT, TOPIC, HOST, password=PASSWORD, username=USERNAME) as ex:
-		while flag:
-			if (msg := ex.get_message()) != None:
-				get_info(msg)
-except KeyboardInterrupt as er:
-	ex.order_VI_VI()
-	print("Fair well, Kenobi")
+	
 	
 
 
