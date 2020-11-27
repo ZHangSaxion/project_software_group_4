@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+application {
+    mainModule = 'src.main'
+    mainClass = 'main.HelloJavaFX'
+}
+
+sourceCompatibility = 1.14
+
+repositories {
+    mavenCentral()
+}
+
+compileJava {
+    options.fork = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'ui_desktop_in_java'
+        }
+    }
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' ]
+}
