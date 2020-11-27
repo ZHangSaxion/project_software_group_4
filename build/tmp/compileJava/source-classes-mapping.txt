@@ -1,4 +1,0 @@
-main/HelloJava.java
- main.HelloJava
-main/HelloJavaFX.java
- main.HelloJavaFX
