@@ -7,24 +7,22 @@ USE Wstation;
  -- Create sensor table --
  
 CREATE TABLE sensor (
-sensor_id int auto_increment,
-a_b_pressure decimal(5,1),
-a_ambient_light decimal(5,1),
-a_temperature decimal(3,1),
+sensor_id int primary key auto_increment,
+a_b_pressure decimal(5,1) DEFAULT 0,
+a_ambient_light decimal(5,1) DEFAULT 0,
+a_temperature decimal(3,1) DEFAULT 0,
 location varchar(30) NOT NULL,
-date_added datetime DEFAULT current_timestamp,
-PRIMARY KEY (sensor_id)
+date_added datetime DEFAULT current_timestamp
 );
 
  -- Create readings table --
 
 CREATE TABLE readings (
-reading_id int auto_increment,
+reading_id int primary key auto_increment,
 b_pressure decimal(5,1) NOT NULL,
 ambient_light decimal(5,1) NOT NULL,
 temperature decimal(3,1) NOT NULL,
-date_read datetime NOT NULL,
-PRIMARY KEY (reading_id)
+date_read datetime DEFAULT current_timestamp
 );
 
  -- Create sensor_to_readings table --
