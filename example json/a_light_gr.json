@@ -1,0 +1,43 @@
+"list": [
+
+{
+	"timestamp": 1606477829,
+	"ambient_light": 10
+},
+
+{
+	"timestamp": 1606476829,
+	"ambient_light": 15
+},
+
+
+{
+	"timestamp": 1606475829,
+	"ambient_light": 17
+},
+
+
+{
+	"timestamp": 1606474829,
+	"ambient_light": 19
+},
+
+
+{
+	"timestamp": 1606473829,
+	"ambient_light": 27
+},
+
+
+{
+	"timestamp": 1606472829,
+	"ambient_light": 22
+},
+
+
+{
+	"timestamp": 1606471829,
+	"ambient_light": 18
+},
+
+]
