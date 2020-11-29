@@ -43,3 +43,7 @@
 
 2.  type in "gradle run" to run the "mainClass" you set in Terminal  
 ![toRun](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/runTheClass.jpg?raw=true)  
+
+---
+## UI Front end Concept
+!.[UI Concept](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/UI%20Front%20end%20Concept.png)
