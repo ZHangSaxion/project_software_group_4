@@ -19,13 +19,19 @@ TOPIC = [('project-software-engineering/devices/pywierden/#',0),
 		('project-software-engineering/devices/pygarage/#',0),
 		('project-software-engineering/devices/pygronau/#',0)]
 
-DB_USER = 'root'
+TOPIC = 'project-software-engineering/devices/#'
 
-DB_PASSWORD = getpass.getpass("Enter db password:")
 
-DB_HOST = 'localhost'
 
-DB = 'wstation'
+# DB_PASSWORD = getpass.getpass("Enter db password:")
+
+DB_USER = 'udwuiyqcaqjflruo'
+
+DB_PASSWORD = 'by3sjyvuabMAXgxMi1vz'
+
+DB_HOST = 'bd91kfdkf5spw0xzmzqv-mysql.services.clever-cloud.com'
+
+DB = 'bd91kfdkf5spw0xzmzqv'
 
 filler = Filler(DB_USER, DB_PASSWORD, DB_HOST, DB)
 

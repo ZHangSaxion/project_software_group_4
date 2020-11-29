@@ -25,6 +25,7 @@ class Extractor:
 		self.__message = None
 		self._running = True
 		self._client = None
+		self._connections_count = 0
 
 	"""
 		The 'magic' function __enter__ is triggered when the class is opened 
@@ -72,8 +73,11 @@ class Extractor:
 		self.__message = self.pretify(message)
 
 	def on_subscribe(self, client, userdata, mid, granted_qos):
-		for t, i in self.__topic:
-			print(f"[*] Broker successfully subscribed to {t}")
+		try:
+			for t, i in self.__topic:
+				print(f"[*] Broker successfully subscribed to {t}")
+		except Exception as e:
+			print(f"[*] Broker successfully subscribed to all the topics")
 
 	"""
 		This function connects to the MQTT server as a client with
@@ -96,6 +100,7 @@ class Extractor:
 
 	def connect_to_MQTT(self):
 		while self._running:
+
 			self._client = mqtt.Client('evgena')
 			if self.__password != None:
 				self._client.username_pw_set(self.__username, password=self.__password)
@@ -103,8 +108,10 @@ class Extractor:
 			self._client.on_message = self.on_message
 			self._client.on_subscribe = self.on_subscribe
 			self._client.connect(self.__host, self.__port)
-			self._client.subscribe(self.__topic)	
-			self._client.loop_forever()
+			self._client.subscribe(self.__topic)
+			if not self._connections_count:	
+				self._client.loop_start()
+				self._connections_count += 1
 
 	"""
 		this function is getter for __message
