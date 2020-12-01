@@ -1,43 +1,48 @@
-"list": [
-
 {
-	"timestamp": 1606477829,
-	"ambient_light": 10
+  
+  "sensor": "pywierden",
+  
+  "list" : [
+  
+{
+	"time": "2020-12-01 14:19:55",
+	"ambient_light": 84
 },
 
 {
-	"timestamp": 1606476829,
-	"ambient_light": 15
-},
-
-
-{
-	"timestamp": 1606475829,
-	"ambient_light": 17
-},
-
-
-{
-	"timestamp": 1606474829,
-	"ambient_light": 19
+	"time": "2020-12-01 14:16:30",
+	"ambient_light": 167
 },
 
 
 {
-	"timestamp": 1606473829,
-	"ambient_light": 27
+	"times": "2020-12-01 12:57:43",
+	"ambient_light": 174
 },
 
 
 {
-	"timestamp": 1606472829,
-	"ambient_light": 22
+	"time": "2020-12-01 12:54:17",
+	"ambient_light": 175
 },
 
 
 {
-	"timestamp": 1606471829,
-	"ambient_light": 18
+	"time": "2020-12-01 12:50:51",
+	"ambient_light": 174
 },
 
+
+{
+	"time": "2020-12-01 12:47:26",
+	"ambient_light": 176
+},
+
+
+{
+	"time": "2020-12-01 12:44:00",
+	"ambient_light": 180
+}
 ]
+
+}

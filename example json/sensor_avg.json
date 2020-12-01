@@ -1,0 +1,39 @@
+{
+
+	"time_requested": "2020-12-01 15:00:00",
+
+	"list": [
+		{
+			"location":  "pygarage",
+			"a_temperature": 6.6,
+			"ambient_light": 65,
+			"b_pressure": 1090.8,
+		},
+
+		{
+			"location":  "pygronau",
+			"temperature": -1,
+			"ambient_light": 100,
+			"b_pressure": 1018.5
+			
+		},
+
+		{
+			"location":  "pysaxion",
+			"temperature": 19,
+			"ambient_light": 98,
+			"b_pressure": 1011.5
+		},
+		
+		{
+			"location":  "pywierden",
+			"temperature": 25,
+			"ambient_light": 76,
+			"b_pressure": 1019.1
+		}
+	]
+
+
+
+
+}
