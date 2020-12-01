@@ -14,10 +14,10 @@ USERNAME = 'project-software-engineering'
 
 PASSWORD = 'ttn-account-v2.OC-mb7b1C5rDmos7-XTSoNE5T85V3c20jnrE8uN4jS0'
 
-TOPIC = [('project-software-engineering/devices/pywierden/#',0),
-		('project-software-engineering/devices/pysaxion/#',0),
-		('project-software-engineering/devices/pygarage/#',0),
-		('project-software-engineering/devices/pygronau/#',0)]
+# TOPIC = [('project-software-engineering/devices/pywierden/#',0),
+# 		('project-software-engineering/devices/pysaxion/#',0),
+# 		('project-software-engineering/devices/pygarage/#',0),
+# 		('project-software-engineering/devices/pygronau/#',0)]
 
 TOPIC = 'project-software-engineering/devices/#'
 
