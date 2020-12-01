@@ -15,13 +15,13 @@
 6.   [ ] Update the project plan
 ---  
 ## Members  
-| Name        | Saxion Email           | GitHub username  |
-| ------------- |:-------------:| -----:|
-| Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |
-| Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |
-| Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|
-| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |
-| Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion |
+| Name        | Saxion Email           | GitHub username  | phone number  |
+| ------------- |:-------------:| -----:| -----:|
+| Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |  //TODO |
+| Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |  //TODO |
+| Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|  //TODO |
+| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |  //TODO |
+| Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion |  0645496041 |
 
 
 | Name        | Scrum master | Database architect | Network, Security and API integration specialist | System architect | Application frontend developer | Application backend developer | Management | Documentation writer |
