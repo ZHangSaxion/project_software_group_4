@@ -1,4 +1,8 @@
-package main;
+package main.java.environmentTests;
+/**
+ * This is a test class for who want to test if gradle can work on his computer
+ */
+
 
 import javafx.application.Application;
 import javafx.scene.Scene;

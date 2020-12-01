@@ -6,7 +6,7 @@ plugins {
 
 application {
     mainModule = 'src.main'
-    mainClass = 'main.HelloJavaFX'
+    mainClass = 'main.java.environmentTests.HelloJavaFX'
 }
 
 sourceCompatibility = 1.14
