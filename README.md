@@ -20,7 +20,7 @@
 | Dani Dragoi     | 479438@student.saxion.nl     |  Danny875 |  //TODO |
 | Dylan Golberdinge van     | 478453@student.saxion.nl     |  Ligfietsdylan |  //TODO |
 | Evgeni Genchev      | 474103@student.saxion.nl | EvgeniGenchev|  //TODO |
-| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |  //TODO |
+| Job Gravendeel  | 483993@student.saxion.nl      |    jgravendeel |  0636366777 |
 | Ziru Hang | 486545@student.saxion.nl     |    ZHangSaxion |  0645496041 |
 
 
