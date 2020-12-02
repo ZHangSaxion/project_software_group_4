@@ -1,37 +1,26 @@
 plugins {
+    id 'org.springframework.boot' version '2.3.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
-application {
-    mainModule = 'src.main'
-    mainClass = 'main.java.environmentTests.HelloJavaFX'
-}
-
-sourceCompatibility = 1.14
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.14'
 
 repositories {
     mavenCentral()
 }
 
-compileJava {
-    options.fork = true
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'ui_desktop_in_java'
-        }
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'mysql:mysql-connector-java'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 }
 
-dependencies {
-    testImplementation group: 'junit', name: 'junit', version: '4.11'
-}
-
-javafx {
-    version = "15.0.1"
-    modules = [ 'javafx.controls' ]
+test {
+    useJUnitPlatform()
 }
