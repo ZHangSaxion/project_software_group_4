@@ -33,8 +33,7 @@ class Filler:
 			elif mer.errno == errorcode.ER_BAD_DB_ERROR:
 				print("Database does not exist")
 			else:
-				print(mer)
-				print("[*] No idea bruh")
+				print("[*] Maxed out connections to database")
 	
 				
 		
@@ -56,12 +55,15 @@ class Filler:
 	def add_reading(self, b_pressure, ambient_light, temperature, sensor):
 		sensor_id = self.get_id(sensor)
 		
-		query_insert_r = f"INSERT INTO readings (b_pressure, ambient_light, temperature) values ({b_pressure}, {ambient_light}, {temperature});"
-		self.__cursor.execute(query_insert_r)
+		query_insert = f"INSERT INTO readings (b_pressure, ambient_light, temperature, sensor_id) values ({b_pressure}, {ambient_light}, {temperature}, {sensor_id});"
+		self.__cursor.execute(query_insert)
+
+		# query_insert_r = f"INSERT INTO readings (b_pressure, ambient_light, temperature) values ({b_pressure}, {ambient_light}, {temperature});"
+		# self.__cursor.execute(query_insert_r)
 		
-		reading_id = self.__cursor.lastrowid
-		query_insert_m = f"insert into sensor_to_readings(sensor_id, reading_id) values ({sensor_id}, {reading_id});"
-		self.__cursor.execute(query_insert_m)
+		# reading_id = self.__cursor.lastrowid
+		# query_insert_m = f"insert into sensor_to_readings(sensor_id, reading_id) values ({sensor_id}, {reading_id});"
+		# self.__cursor.execute(query_insert_m)
 		
 		self.__db.commit()
 		
