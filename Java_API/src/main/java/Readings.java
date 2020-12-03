@@ -1,31 +1,28 @@
 package main.java;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 @Entity
-//@Table(name = "sensor")
-public class SensorData {
+@Table(name = "readings")
+public class Readings {
     @Id
-//    @Column(name = "sensor_id")
+    @Column(name = "reading_id")
     private int id;
 
-//    @Column(name = "a_b_pressure")
-    private double a_pressure;
+    @Column(name = "b_pressure")
+    private double pressure;
 
-//    @Column(name = "a_ambient_light")
+    @Column(name = "ambient_light")
     private double ambient_light;
 
-//    @Column(name = "a_temperature")
+    @Column(name = "temperature")
     private double temperature;
 
-//    @Column(name = "location")
-    private String location;
-
-//    @Column(name = "date_added")
+    @Column(name = "date_read")
     private Date date;
 
     public int getId() {
@@ -37,11 +34,11 @@ public class SensorData {
     }
 
     public double getA_pressure() {
-        return a_pressure;
+        return pressure;
     }
 
     public void setA_pressure(double a_pressure) {
-        this.a_pressure = a_pressure;
+        this.pressure = a_pressure;
     }
 
     public double getAmbient_light() {
@@ -58,14 +55,6 @@ public class SensorData {
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public Date getDate() {
