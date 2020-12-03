@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping(value = "/weather_station_java_api")
 public class APIController {
@@ -36,12 +38,16 @@ public class APIController {
     public @ResponseBody String getReadingsByTime() {
         StringBuffer result = new StringBuffer();
         result.append("{\n\t\"time_requested\":");
+        result.append(new Date());
+        result.append(",\n\n\"list\": ");
         String sql = "SELECT DISTINCT sensor.sensor_id as location, readings.date_read as time, readings.temperature, readings.ambient_light, readings.b_pressure " +
                 "FROM readings " +
                 "INNER JOIN sensor_to_readings ON readings.reading_id = sensor_to_readings.reading_id " +
                 "INNER JOIN sensor ON sensor.sensor_id = sensor_to_readings.sensor_id" +
                 "ORDER BY date_read DESC " +
                 "LIMIT BY 1";
+
+        result.append("\n}");
         return result.toString();
     }
 }
