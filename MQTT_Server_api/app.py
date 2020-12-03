@@ -27,7 +27,7 @@ TOPIC = 'project-software-engineering/devices/#'
 
 DB_USER = 'udwuiyqcaqjflruo'
 
-DB_PASSWORD = 'by3sjyvuabMAXgxMi1vz'
+DB_PASSWORD = 'KKsTC3HXAALuBQp4CrUz'
 
 DB_HOST = 'bd91kfdkf5spw0xzmzqv-mysql.services.clever-cloud.com'
 

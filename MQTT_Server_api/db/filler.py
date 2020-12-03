@@ -32,6 +32,9 @@ class Filler:
 				print("Something is wrong with your user name or password")
 			elif mer.errno == errorcode.ER_BAD_DB_ERROR:
 				print("Database does not exist")
+			else:
+				print(mer)
+				print("[*] No idea bruh")
 	
 				
 		
