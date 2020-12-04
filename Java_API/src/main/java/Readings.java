@@ -13,6 +13,9 @@ public class Readings {
     @Column(name = "reading_id")
     private int id;
 
+    @Column(name = "sensor_id")
+    private int sensor_id;
+
     @Column(name = "b_pressure")
     private double pressure;
 
@@ -63,5 +66,13 @@ public class Readings {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getSensor_id() {
+        return sensor_id;
+    }
+
+    public void setSensor_id(int sensor_id) {
+        this.sensor_id = sensor_id;
     }
 }

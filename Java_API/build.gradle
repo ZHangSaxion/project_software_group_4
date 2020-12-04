@@ -12,12 +12,17 @@ repositories {
 }
 
 dependencies {
+    // Using spring boot framework to build server.
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Add mySQL connection lib.
     runtimeOnly 'mysql:mysql-connector-java'
+    // Setting test lib for spring boot.
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    // Add jsonArray to convert ResultSet to json style String.
+    implementation 'org.json:json:20171018'
 }
 
 test {
