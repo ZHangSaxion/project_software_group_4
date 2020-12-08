@@ -38,41 +38,41 @@ flag = True
 # this function decodes the base64 decoded messaged and calculates the values 
 def decoder(message):
 
-  base64_bytes = message.encode('ascii')
-  message_bytes = base64.b64decode(base64_bytes)
-  message = message_bytes.decode('ascii')
+	base64_bytes = message.encode('ascii')
+	message = base64.b64decode(base64_bytes)
+	
+	temperature = ((message[2] - 20) * 10 + message[3]) / 10 				
+	pressure = message[0] / 2 + 950
+	light = message[1]
 
-  temperature = ((ord(message[2]) - 20) * 10 + ord(message[3])) / 10 				
-  pressure = ord(message[0]) / 2 + 950
-  light = ord(message[1])
-
-  return pressure, light, temperature
+	return pressure, light, temperature
 
 
 def get_info(raw_json):
-		sj = json.loads(raw_json)
+	sj = json.loads(raw_json)
 
-		payload = sj['payload_raw']
+	payload = sj['payload_raw']
 
-		location = sj['dev_id']
+	location = sj['dev_id']
 		
-		pressure, ambient_light, temperature = decoder(payload)
+	pressure, ambient_light, temperature = decoder(payload)
 
-		if args:
-			if args[0] in ('-i', '--info'):
-				print("\nlocation: ", location, 
-						"\ntemperature:" ,temperature,
-						"\nambient_light:" ,ambient_light,
-						"\npressure:" ,pressure, 
-						'\n')
+	if args:
+		if args[0] in ('-i', '--info'):
+			print("\nlocation: ", location, 
+					"\ntemperature:" ,temperature,
+					"\nambient_light:" ,ambient_light,
+					"\npressure:" ,pressure, 
+					'\n')
 
-		return pressure, ambient_light, temperature, location
+	return pressure, ambient_light, temperature, location
 
 try:
 	with Extractor(PORT, TOPIC, HOST, password=PASSWORD, username=USERNAME) as ex:
 		while flag:
 			if (msg := ex.get_message()) != None:
-				filler.add_reading(*get_info(msg))
+				get_info(msg)
+				# filler.add_reading(*get_info(msg))
 
 except KeyboardInterrupt:
 	flag = False
