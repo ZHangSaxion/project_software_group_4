@@ -42,4 +42,13 @@ public class Sensor {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "\"sensor_id\" = " + id +
+                ", \"location\" = '" + location + '\'' +
+                ", \"date_added\" = " + date +
+                '}';
+    }
 }

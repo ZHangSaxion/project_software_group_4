@@ -1,10 +1,10 @@
 package main.java;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "readings")
@@ -74,5 +74,16 @@ public class Readings {
 
     public void setSensor_id(int sensor_id) {
         this.sensor_id = sensor_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Readings{" +
+                ", \"sensor_id\" = " + sensor_id +
+                ", \"b_pressure\" = " + pressure +
+                ", \"ambient_light\" = " + ambient_light +
+                ", \"temperature\" = " + temperature +
+                ", \"date\" = " + date +
+                '}';
     }
 }
