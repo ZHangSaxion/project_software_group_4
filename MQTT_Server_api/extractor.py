@@ -21,11 +21,14 @@ class Extractor:
 		self.__port = port
 		self.__topic = topic
 		self.__password = password
-		self.__connection_thread = None
-		self.__message = None
+
 		self._running = True
-		self._client = None
 		self._connections_count = 0
+		self.__connection_thread = None
+		
+		self.__message = None
+		self._client = None
+		
 
 	"""
 		The 'magic' function __enter__ is triggered when the class is opened 
