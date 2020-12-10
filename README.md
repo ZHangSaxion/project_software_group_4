@@ -46,4 +46,6 @@
 
 ---
 ## UI Front end Concept
-!.[UI Concept](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/UI%20Front%20end%20Concept.png)
+!.[UI Concept V1](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/UI%20Front%20end%20Concept.png?raw=true)
+
+!.[UI Concept V2](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/UI%20Front%20end%20Concept%20V2.png?raw=true)
