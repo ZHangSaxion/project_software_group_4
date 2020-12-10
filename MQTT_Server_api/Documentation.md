@@ -184,5 +184,99 @@ def order_VI_VI(self):
 
 ```
 
+## Filler
+
+
+# Functionality
+
+The only functionality of the Filler class is to connect database that can be 
+defined in the initialisation of the class and retrieving and inserting 	
+data using predifined queries that suit the WeatherStation project
+	
+# Usage
+	
+In the intitialisation of the class all the parameters that are needed in order
+to start the connection are being defined. On top of that there are `__db` and 
+`__cursor` variables that will be assigned a value after the class is being run
+	
+```python
+def __init__(self, user, password, host, dbn):
+		self.__user = user
+		self.__password = password
+		self.__host = host
+		self.__db_name = dbn
+		self.__db = None
+		self.__cursor = None
+```
+
+After initialisation the server will not start untill the `run` function is called.
+Than a connection to the database is established and a cursor is being created and
+respectively the values of `__db` and `__cursor` are set: 
+
+```python
+def run(self):
+		try:
+			self.__db = ms.connect(
+				user=self.__user,
+				password=self.__password,
+				host=self.__host,
+				database=self.__db_name
+				)
+
+			print(f"[*] Connection to database '{self.__host}.{self.__db_name}' established")
+
+			self.__cursor = self.__db.cursor()
+
+			print("[*] Database cursor created")
+
+		except ms.Error as mer:
+			if mer.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+				print("Something is wrong with your user name or password")
+			elif mer.errno == errorcode.ER_BAD_DB_ERROR:
+				print("Database does not exist")
+			else:
+				print("[*] Maxed out connections to database")
+```
+
+After the establishment of the connection there are 3 options available.
+
+`get_id` is a function that returns the `sensor_id` and it takes as
+arguments the sensor location:
+
+```python
+
+def get_id(self, sensor):
+		query = f"SELECT sensor_id FROM sensor WHERE location = '{sensor}'"
+		self.__cursor.execute(query)
+
+		if result := self.__cursor.fetchall():
+			sensor_id = int(result[0][0])
+			return sensor_id
+		else:
+			return self.add_sensor(sensor)
+```
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
 
