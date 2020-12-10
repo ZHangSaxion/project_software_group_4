@@ -2,10 +2,7 @@ package main.java;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,21 +21,21 @@ public class APIController {
     private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @GetMapping(path = "/all_sensor")
-    public @ResponseBody
-    Iterable<Sensor> getAllSensors() {
+    @ResponseBody
+    public Iterable<Sensor> getAllSensors() {
         return sensorsRepository.findAll();
     }
 
     @GetMapping(path = "/all_readings")
-    public @ResponseBody
-    Iterable<Readings> getAllReadings() {
+    @ResponseBody
+    public Iterable<Readings> getAllReadings() {
         return readingsRepository.findAll();
     }
 
 
     @GetMapping(path = "/now_sensor") // request time + last readings for each sensor
-    public @ResponseBody
-    String getReadingsByTime() {
+    @ResponseBody
+    public String getReadingsByTime() {
         StringBuffer result = new StringBuffer();
         result.append("{\n\t\"time_requested\":");
         result.append(new Date() + ",\n");
@@ -71,9 +68,9 @@ public class APIController {
         return result.toString();
     }
 
-    @GetMapping(path = "/reading_from_id_full/{id}")
-    public @ResponseBody
-    String getReadingsBySensor(@PathVariable(name = "id") long id) {
+    @GetMapping(path = "/reading_from_id_full")
+    @ResponseBody
+    public String getReadingsBySensor(@RequestParam int id) {
         StringBuffer result = new StringBuffer();
         result.append(headerForGetReadingsById(id));
 
@@ -93,9 +90,9 @@ public class APIController {
         return result.toString();
     }
 
-    @GetMapping(path = "/reading_from_id_ambient_light/{id}")
-    public @ResponseBody
-    String getReadingsBySensorForAmbient(@PathVariable(name = "id") long id) {
+    @GetMapping(path = "/reading_from_id_ambient_light")
+    @ResponseBody
+    public String getReadingsBySensorForAmbient(@RequestParam int id) {
         StringBuffer result = new StringBuffer();
         result.append(headerForGetReadingsById(id));
 
@@ -113,9 +110,9 @@ public class APIController {
         return result.toString();
     }
 
-    @GetMapping(path = "/reading_from_id_temperature/{id}")
-    public @ResponseBody
-    String getReadingsBySensorForTemperature(@PathVariable(name = "id") long id) {
+    @GetMapping(path = "/reading_from_id_temperature")
+    @ResponseBody
+    public String getReadingsBySensorForTemperature(@RequestParam int id) {
         StringBuffer result = new StringBuffer();
         result.append(headerForGetReadingsById(id));
 
@@ -133,9 +130,9 @@ public class APIController {
         return result.toString();
     }
 
-    @GetMapping(path = "/reading_from_id_pressure/{id}")
-    public @ResponseBody
-    String getReadingsBySensorForPressure(@PathVariable(name = "id") long id) {
+    @GetMapping(path = "/reading_from_id_pressure")
+    @ResponseBody
+    public String getReadingsBySensorForPressure(@RequestParam int id) {
         StringBuffer result = new StringBuffer();
         result.append(headerForGetReadingsById(id));
 
@@ -154,9 +151,9 @@ public class APIController {
     }
 
 
-    @GetMapping(path = "/reading_from_place_full/{place}")
-    public @ResponseBody
-    String getReadingsBySensorByPlace(@PathVariable(name = "place") String place) {
+    @GetMapping(path = "/reading_from_place_full")
+    @ResponseBody
+    public String getReadingsBySensorByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
             if (s.getLocation().equals(place))
@@ -165,9 +162,9 @@ public class APIController {
         return getReadingsBySensor(id.get());
     }
 
-    @GetMapping(path = "/reading_from_place_ambient_light/{place}")
-    public @ResponseBody
-    String getReadingsBySensorForAmbientByPlace(@PathVariable(name = "place") String place) {
+    @GetMapping(path = "/reading_from_place_ambient_light")
+    @ResponseBody
+    public String getReadingsBySensorForAmbientByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
             if (s.getLocation().equals(place))
@@ -176,9 +173,9 @@ public class APIController {
         return getReadingsBySensorForAmbient(id.get());
     }
 
-    @GetMapping(path = "/reading_from_place_temperature/{place}")
-    public @ResponseBody
-    String getReadingsBySensorForTemperatureByPlace(@PathVariable(name = "place") String place) {
+    @GetMapping(path = "/reading_from_place_temperature")
+    @ResponseBody
+    public String getReadingsBySensorForTemperatureByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
             if (s.getLocation().equals(place))
@@ -187,9 +184,9 @@ public class APIController {
         return getReadingsBySensorForTemperature(id.get());
     }
 
-    @GetMapping(path = "/reading_from_place_pressure/{place}")
-    public @ResponseBody
-    String getReadingsBySensorForPressureByPlace(@PathVariable(name = "place") String place) {
+    @GetMapping(path = "/reading_from_place_pressure}")
+    @ResponseBody
+    public String getReadingsBySensorForPressureByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
             if (s.getLocation().equals(place))
