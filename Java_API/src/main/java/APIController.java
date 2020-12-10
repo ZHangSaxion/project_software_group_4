@@ -2,11 +2,16 @@ package main.java;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -77,12 +82,7 @@ public class APIController {
         var readings = readingsRepository.findAll();
         for (Readings r : readings) {
             if (r.getSensor_id() == id) {
-                result.append("{\n");
-                result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-                result.append("\"temperature\": " + r.getTemperature() + ",\n");
-                result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
-                result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
-                result.append("}\n");
+                result.append(fullInfoOfAReading(r));
             }
         }
 
@@ -99,10 +99,7 @@ public class APIController {
         var readings = readingsRepository.findAll();
         for (Readings r : readings) {
             if (r.getSensor_id() == id) {
-                result.append("{\n");
-                result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-                result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
-                result.append("}\n");
+                result.append(ambientLightoOfAReading(r));
             }
         }
 
@@ -119,10 +116,7 @@ public class APIController {
         var readings = readingsRepository.findAll();
         for (Readings r : readings) {
             if (r.getSensor_id() == id) {
-                result.append("{\n");
-                result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-                result.append("\"temperature\": " + r.getTemperature() + ",\n");
-                result.append("}\n");
+                result.append(temperatureOfAReading(r));
             }
         }
 
@@ -139,10 +133,7 @@ public class APIController {
         var readings = readingsRepository.findAll();
         for (Readings r : readings) {
             if (r.getSensor_id() == id) {
-                result.append("{\n");
-                result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-                result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
-                result.append("}\n");
+                result.append(pressureOfAReading(r));
             }
         }
 
@@ -156,7 +147,7 @@ public class APIController {
     public String getReadingsBySensorByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().equals(place))
+            if (s.getLocation().contains(place))
                 id.set(s.getId());
         });
         return getReadingsBySensor(id.get());
@@ -167,7 +158,7 @@ public class APIController {
     public String getReadingsBySensorForAmbientByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().equals(place))
+            if (s.getLocation().contains(place))
                 id.set(s.getId());
         });
         return getReadingsBySensorForAmbient(id.get());
@@ -178,23 +169,93 @@ public class APIController {
     public String getReadingsBySensorForTemperatureByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().equals(place))
+            if (s.getLocation().contains(place))
                 id.set(s.getId());
         });
         return getReadingsBySensorForTemperature(id.get());
     }
 
-    @GetMapping(path = "/reading_from_place_pressure}")
+    @GetMapping(path = "/reading_from_place_pressure")
     @ResponseBody
     public String getReadingsBySensorForPressureByPlace(@RequestParam String place) {
         AtomicInteger id = new AtomicInteger(1);
         sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().equals(place))
+            if (s.getLocation().contains(place))
                 id.set(s.getId());
         });
         return getReadingsBySensorForPressure(id.get());
     }
 
+    @GetMapping(path = "/recent_readings_1sensor_id")
+    @ResponseBody
+    public String getReadingsByDays(@RequestParam int day, int id){
+        StringBuffer result = new StringBuffer();
+        result.append(headerForGetReadingsById(id));
+
+        var dateFrom = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE,-day);
+
+        var readings = readingsRepository.findAll();
+        for (Readings r : readings) {
+            if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime())) {
+                result.append(fullInfoOfAReading(r));
+            }
+        }
+
+        result.append("\n]\n}");
+        return result.toString();
+    }
+    @GetMapping(path = "/recent_readings_1sensor")
+    @ResponseBody
+    public String getReadingsByDaysPlace(@RequestParam int day, String place){
+        StringBuffer result = new StringBuffer();
+
+        AtomicInteger id = new AtomicInteger(0);
+        sensorsRepository.findAll().forEach(s -> {
+            if(s.getLocation().contains(place))
+                id.set(s.getId());
+        });
+        result.append(headerForGetReadingsById(id.get()));
+
+        var dateFrom = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE,-day);
+
+        var readings = readingsRepository.findAll();
+        for (Readings r : readings) {
+            if (r.getSensor_id() == id.get() && r.getDate().after(dateFrom.getTime())) {
+                result.append(fullInfoOfAReading(r));
+            }
+        }
+
+        result.append("\n]\n}");
+        return result.toString();
+    }
+    @GetMapping(path = "/recent_readings")
+    @ResponseBody
+    public String getReadingsByDayForAllSensors(@RequestParam int day){
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+
+        var allSensor = new HashMap<Integer, String>();
+        sensorsRepository.findAll().forEach(s -> {
+            allSensor.put(s.getId(),s.getLocation());
+        });
+        for(int id : allSensor.keySet()) {
+            result.append("{\"location\":" + allSensor.get(id) + ",\n");
+            result.append(getReadingsByDays(day,id));
+            result.append("}\n");
+        }
+
+        result.append("\n}");
+        return result.toString();
+    }
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     private String headerForGetReadingsById(long id) {
         StringBuffer result = new StringBuffer();
         result.append("{\n\t\"sensor\":");
@@ -207,6 +268,43 @@ public class APIController {
 
         result.append("\"" + location.get() + "\",\n");
         result.append("\"list\": [\n");
+        return result.toString();
+    }
+
+    private String fullInfoOfAReading(Readings r){
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"temperature\": " + r.getTemperature() + ",\n");
+        result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
+        result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
+        result.append("}\n");
+        return result.toString();
+    }
+
+    private String temperatureOfAReading(Readings r){
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"temperature\": " + r.getTemperature() + ",\n");
+        result.append("}\n");
+        return result.toString();
+    }
+
+    private String ambientLightoOfAReading(Readings r){
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
+        result.append("}\n");
+        return result.toString();
+    }
+    private String pressureOfAReading(Readings r){
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
+        result.append("}\n");
         return result.toString();
     }
 }
