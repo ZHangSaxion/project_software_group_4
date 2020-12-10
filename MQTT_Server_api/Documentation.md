@@ -136,7 +136,7 @@ def on_message(self, client, userdata, msg):
 
 ```python
 def on_connect(self, client, userdata, flags,rc):
-		print("[*] Bad connection! Return code: " + rc if rc else f"[*] Connection to MQTT server {self.__host} established")
+	print("[*] Bad connection! Return code: " + rc if rc else f"[*] Connection to MQTT server {self.__host} established")
 
 ```
 
