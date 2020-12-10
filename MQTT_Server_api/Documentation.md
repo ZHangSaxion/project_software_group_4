@@ -187,13 +187,13 @@ def order_VI_VI(self):
 ## Filler
 
 
-# Functionality
+### Functionality
 
 The only functionality of the Filler class is to connect database that can be 
 defined in the initialisation of the class and retrieving and inserting 	
 data using predifined queries that suit the WeatherStation project
 	
-# Usage
+### Usage
 	
 In the intitialisation of the class all the parameters that are needed in order
 to start the connection are being defined. On top of that there are `__db` and 
@@ -255,6 +255,42 @@ def get_id(self, sensor):
 		else:
 			return self.add_sensor(sensor)
 ```
+
+If the sensor could not be find in the database `get_id` returns a call to add_sensor
+an insertion query is being executed:
+
+```python
+def add_sensor(self, sensor):
+		query = f"insert into sensor(location) values ('{sensor}')";
+		
+		self.__cursor.execute(query)
+		sensor_id = self.__cursor.lastrowid
+		
+		self.__db.commit()
+		
+		print(f"[*] New sensor '{sensor}' added")
+		
+		return int(sensor_id)
+
+```
+
+Finally the most important part of the filler is the `add_readings` is used to insert reading
+the database:
+
+
+```python
+
+def add_reading(self, b_pressure, ambient_light, temperature, sensor):
+		sensor_id = self.get_id(sensor)
+		query_insert = f"INSERT INTO readings (b_pressure, ambient_light, temperature, sensor_id) values ({b_pressure}, {ambient_light}, {temperature}, {sensor_id});"
+		self.__cursor.execute(query_insert)
+		
+		self.__db.commit()
+		
+		print(f"[*] Reading for {sensor} added")
+``` 
+
+
 	
 	
 	
