@@ -71,8 +71,7 @@ try:
 	with Extractor(PORT, TOPIC, HOST, password=PASSWORD, username=USERNAME) as ex:
 		while flag:
 			if (msg := ex.get_message()) != None:
-				get_info(msg)
-				# filler.add_reading(*get_info(msg))
+				filler.add_reading(*get_info(msg))
 
 except KeyboardInterrupt:
 	flag = False

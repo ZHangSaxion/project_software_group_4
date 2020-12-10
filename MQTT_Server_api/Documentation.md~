@@ -104,85 +104,15 @@ the while loop is the way of stoping the thread which is set
 above in `__exit__`
 
 client.subscribe([SOME TOPIC]) is used to subscribe to topic so 
-that our `on_message` listens for messages and it also provides
-messeges concerning subscribtion:
-
-```python
-def on_subscribe(self, client, userdata, mid, granted_qos):
-		try:
-			for t, i in self.__topic:
-				print(f"[*] Broker successfully subscribed to {t}")
-		except Exception as e:
-			print(f"[*] Broker successfully subscribed to all the topics")
-
-``` 
-
-
-
+that our `on_message` listens for messages 
 
 with `client.on_connect = self.on_connect` and `client.on_message = self.on_message` 
-pahon-mqtt @property functions are being overwritten
-
-`on_messege` is used to set the value of `self.__message` to the last recieved message decoded in utf-8:
-
-```python
-
-def on_message(self, client, userdata, msg):
-		message = (msg.payload.decode('utf-8'))
-		self.__message = self.pretify(message)
-```  
-
-`on_connect` is printing either success or fail message on the connection status:
-
-```python
-def on_connect(self, client, userdata, flags,rc):
-		print("[*] Bad connection! Return code: " + rc if rc else f"[*] Connection to MQTT server {self.__host} established")
-
-```
-
+pahon-mqtt @property functions are being overwritten 
 
 `client.connect([HOST], [PORT])` is used to connect to the MQTT server
 
 With the if statement and `_conections_count` it is ensured that 
 only one paho-mqtt thread is being created and started
-
-In the class Extrractor there is a getter function that sends the current
-last received message and then sets the value of `self.__message` to None 
-in order to have no way of messege to be read twice:
-
-```python
-def get_message(self):
-		msg = self.__message
-		self.__message = None
-		return msg;
-	
-```
-
-In order to have the functionality of using contex manger the class has
-to have a way of stoping all the threads and loops that may be running
-in a function called `__exit__`:
-
-
-```python
-def __exit__(self, exc_type, exc_val, exc_tb):
-		self.order_VI_VI()
-
-```  
-
-This function uses another class function called `order_VI_VI`. The stopping
-procces inside the magic function beacause this will ensure that if the contex
-manager routine fail without properly exiting the thread could still be stopped.
-Inside `order_VI_VI` you can see two things. First the paho-mqtt internal 
-loop/thread is being stopped and then the loop inside the connection thread which
-will force the thread to stop.
-
-```python
-
-def order_VI_VI(self):
-		self._client.loop_stop()
-		self._running = False
-
-```
 
 
 
