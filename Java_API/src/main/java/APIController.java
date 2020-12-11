@@ -31,6 +31,22 @@ public class APIController {
         return sensorsRepository.findAll();
     }
 
+    @GetMapping(path = "/all_sensor_location")
+    @ResponseBody
+    public String getAllLocation() {
+        StringBuffer result = new StringBuffer();
+
+        result.append("{\"list\":[\n");
+        sensorsRepository.findAll().forEach(s -> {
+            result.append("{\n\"sensor_id\": \"" + s.getId() + ",\"\n");
+            result.append("\n\"location\": \"" + s.getLocation() + ",\"\n}\n");
+        });
+
+        result.append("]\n}");
+
+        return result.toString();
+    }
+
     @GetMapping(path = "/all_readings")
     @ResponseBody
     public Iterable<Readings> getAllReadings() {
