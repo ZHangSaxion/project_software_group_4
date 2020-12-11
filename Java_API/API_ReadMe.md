@@ -20,9 +20,9 @@
 11. https://wstation-api.gw.run/weather_station_java_api/reading_from_place_pressure?place={place}  
        1. for example: https://wstation-api.gw.run/weather_station_java_api/reading_from_place_pressure?place=pygarage  
 12. https://wstation-api.gw.run/weather_station_java_api/recent_readings_1sensor_id?day={day}&id={id}
-       1. for example: http://localhost:8080/weather_station_java_api/recent_readings_1sensor_id?day=30&id=1
+       1. for example: http://wstation-api.gw.run/weather_station_java_api/recent_readings_1sensor_id?day=30&id=1
 13. https://wstation-api.gw.run/weather_station_java_api/recent_readings_1sensor?day={day}&place={place}
-       1. for example: http://localhost:8080/weather_station_java_api/recent_readings_1sensor?day=30&place=pygarage
+       1. for example: http://wstation-api.gw.run/weather_station_java_api/recent_readings_1sensor?day=30&place=pygarage
 14. https://wstation-api.gw.run/weather_station_java_api/recent_readings?day={day}
        1. for example:  https://wstation-api.gw.run/weather_station_java_api/recent_readings?day=30
 15. https://wstation-api.gw.run/weather_station_java_api/all_sensor_location
