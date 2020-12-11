@@ -1,0 +1,20 @@
+{"list":
+	[ 
+		{ 
+			"sensor_id": "1," 
+			"location": "pywierden," 
+		}
+		{ 
+			"sensor_id": "2," 
+			"location": "pygarage,"
+		}
+		{ 
+			"sensor_id": "3," 
+			"location": "pygronau," 
+		} 
+		{ 
+			"sensor_id": "4," 	
+			"location": "pysaxion," 
+		} 
+	]
+}
