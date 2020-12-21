@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="240.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExitWnd">
+    <stylesheets>
+        <URL value="@WindowStyles.css" />
+    </stylesheets>
+    <VBox alignment="TOP_CENTER" prefHeight="272.0" prefWidth="380.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Text fx:id="textEx" strokeType="OUTSIDE" strokeWidth="0.0" text="I'm sorry you are leaving! See you next time!" textAlignment="CENTER" wrappingWidth="300.0" AnchorPane.topAnchor="120.0">
+            <font>
+                <Font size="24.0" />
+            </font>
+         <effect>
+            <InnerShadow />
+         </effect>
+         <VBox.margin>
+            <Insets top="40.0" />
+         </VBox.margin>
+        </Text>
+        <Text fx:id="textQ" strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure you want to leave?" textAlignment="CENTER" wrappingWidth="300.0" AnchorPane.topAnchor="160.0">
+            <font>
+                <Font size="24.0" />
+            </font>
+            <effect>
+                <InnerShadow />
+            </effect>
+            <VBox.margin>
+                <Insets top="15.0" />
+            </VBox.margin>
+        </Text>
+    </VBox>
+   <HBox alignment="BOTTOM_CENTER" layoutY="146.0" prefHeight="90.0" prefWidth="400.0" AnchorPane.topAnchor="170.0">
+      <children>
+         <Button fx:id="noBtn" maxHeight="26.0" mnemonicParsing="false" prefWidth="60.0" text="NO" onAction="#noExit">
+            <HBox.margin>
+               <Insets bottom="10.0" left="10.0" right="100.0" top="10.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="yesBtn" mnemonicParsing="false"  prefWidth="60.0" text="YES" onAction="#yesExit">
+            <HBox.margin>
+               <Insets bottom="10.0" top="10.0" />
+            </HBox.margin>
+         </Button>
+      </children>
+   </HBox>
+
+</AnchorPane>
