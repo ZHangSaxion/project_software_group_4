@@ -38,10 +38,10 @@ public class APIController {
 
         result.append("{\"list\":[\n");
         sensorsRepository.findAll().forEach(s -> {
-            result.append("{\n\"sensor_id\": \"" + s.getId() + ",\"\n");
-            result.append("\n\"location\": \"" + s.getLocation() + ",\"\n}\n");
+            result.append("{\n\"sensor_id\": \"" + s.getId() + "\",\n");
+            result.append("\n\"location\": \"" + s.getLocation() + "\"\n},\n");
         });
-
+        result.deleteCharAt(result.length() - 2);
         result.append("]\n}");
 
         return result.toString();
@@ -58,8 +58,8 @@ public class APIController {
     @ResponseBody
     public String getReadingsByTime() {
         StringBuffer result = new StringBuffer();
-        result.append("{\n\t\"time_requested\":");
-        result.append(new Date() + ",\n");
+        result.append("{\n\t\"time_requested\":\"");
+        result.append(new Date() + "\",\n");
         result.append("\"list\": [\n");
         var allReadings = readingsRepository.findAll();
         for (int numOfSensors = 1; numOfSensors <= 4; numOfSensors++) {
@@ -83,8 +83,9 @@ public class APIController {
             result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
             result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
             result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
-            result.append("},\n");
+            result.append("},");
         }
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -101,7 +102,7 @@ public class APIController {
                 result.append(fullInfoOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -118,7 +119,7 @@ public class APIController {
                 result.append(ambientLightoOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -135,7 +136,7 @@ public class APIController {
                 result.append(temperatureOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -152,7 +153,7 @@ public class APIController {
                 result.append(pressureOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -217,7 +218,7 @@ public class APIController {
                 result.append(fullInfoOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -242,7 +243,7 @@ public class APIController {
                 result.append(fullInfoOfAReading(r));
             }
         }
-
+        result.deleteCharAt(result.length() - 1);
         result.append("\n]\n}");
         return result.toString();
     }
@@ -256,13 +257,15 @@ public class APIController {
         sensorsRepository.findAll().forEach(s -> {
             allSensor.put(s.getId(),s.getLocation());
         });
-        for(int id : allSensor.keySet()) {
-            result.append("{\"location\":" + allSensor.get(id) + ",\n");
-            result.append(getReadingsByDays(day,id));
-            result.append("}\n");
-        }
+        result.append("\"list\":[\n");
 
-        result.append("\n}");
+        for(int id : allSensor.keySet()) {
+//            result.append("\"location\":" + allSensor.get(id) + ",\n");
+            result.append(getReadingsByDays(day,id));
+            result.append(",\n");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append("]\n}");
         return result.toString();
     }
 
@@ -294,7 +297,7 @@ public class APIController {
         result.append("\"temperature\": " + r.getTemperature() + ",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
-        result.append("}\n");
+        result.append("},");
         return result.toString();
     }
 
@@ -303,7 +306,7 @@ public class APIController {
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + "\n");
-        result.append("}\n");
+        result.append("},");
         return result.toString();
     }
 
@@ -312,7 +315,7 @@ public class APIController {
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + "\n");
-        result.append("}\n");
+        result.append("},");
         return result.toString();
     }
     private String pressureOfAReading(Readings r){
@@ -320,7 +323,7 @@ public class APIController {
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
-        result.append("}\n");
+        result.append("},");
         return result.toString();
     }
 }
