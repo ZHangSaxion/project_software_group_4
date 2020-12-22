@@ -82,7 +82,7 @@ public class APIController {
             result.append("\"time\": \"" + ft.format(newestReading.getDate()) + "\",\n");
             result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
             result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
-            result.append("\"b_pressure\": " + newestReading.getA_pressure() + ",\n");
+            result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
             result.append("},\n");
         }
         result.append("\n]\n}");
@@ -293,7 +293,7 @@ public class APIController {
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + ",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
-        result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
+        result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
         result.append("}\n");
         return result.toString();
     }
@@ -302,7 +302,7 @@ public class APIController {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-        result.append("\"temperature\": " + r.getTemperature() + ",\n");
+        result.append("\"temperature\": " + r.getTemperature() + "\n");
         result.append("}\n");
         return result.toString();
     }
@@ -311,7 +311,7 @@ public class APIController {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-        result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
+        result.append("\"ambient_light\": " + r.getAmbient_light() + "\n");
         result.append("}\n");
         return result.toString();
     }
@@ -319,7 +319,7 @@ public class APIController {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
-        result.append("\"b_pressure\": " + r.getA_pressure() + ",\n");
+        result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
         result.append("}\n");
         return result.toString();
     }
