@@ -20,13 +20,21 @@ TOPIC = 'project-software-engineering/devices/#'
 ####### end ########
 
 ####### constants DB login information ########
-DB_USER = 'udwuiyqcaqjflruo'
+# DB_USER = 'udwuiyqcaqjflruo'
+#
+# DB_PASSWORD = 'AgBZZKgGOWLaS5gOeBLM'
+#
+# DB_HOST = 'bd91kfdkf5spw0xzmzqv-mysql.services.clever-cloud.com'
+#
+# DB = 'bd91kfdkf5spw0xzmzqv'
 
-DB_PASSWORD = 'AgBZZKgGOWLaS5gOeBLM'
+DB_USER = 'group4'
 
-DB_HOST = 'bd91kfdkf5spw0xzmzqv-mysql.services.clever-cloud.com'
+DB_PASSWORD = 'WSgroup4!'
 
-DB = 'bd91kfdkf5spw0xzmzqv'
+DB_HOST = '127.0.0.1'
+
+DB = 'weather_station'
 ####### end ########
 
 # creating connection to the mysql database
