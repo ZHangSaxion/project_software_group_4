@@ -20,13 +20,13 @@ TOPIC = 'project-software-engineering/devices/#'
 ####### end ########
 
 ####### constants DB login information ########
-DB_USER = 'udwuiyqcaqjflruo'
+DB_USER = 'admin'
 
-DB_PASSWORD = 'AgBZZKgGOWLaS5gOeBLM'
+DB_PASSWORD = 'Saxion123!'
 
-DB_HOST = 'bd91kfdkf5spw0xzmzqv-mysql.services.clever-cloud.com'
+DB_HOST = 'w-station.cfmzfckzyfgd.us-east-2.rds.amazonaws.com'
 
-DB = 'bd91kfdkf5spw0xzmzqv'
+DB = 'wstation'
 ####### end ########
 
 # creating connection to the mysql database
