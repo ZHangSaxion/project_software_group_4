@@ -21,7 +21,7 @@ class Filler:
 				database=self.__db_name
 				)
 
-			print(f"[*] Connection to database '{self.__host}.{self.__db_name}' established")
+			print(f"[*] Connection to database '{self.__db_name}' established")
 
 			self.__cursor = self.__db.cursor()
 
