@@ -21,9 +21,14 @@ class Extractor:
 		self.__port = port
 		self.__topic = topic
 		self.__password = password
-		self.__connection_thread = None
-		self.__message = None
+
 		self._running = True
+		self._connections_count = 0
+		self.__connection_thread = None
+		
+		self.__message = None
+		self._client = None
+		
 
 	"""
 		The 'magic' function __enter__ is triggered when the class is opened 
@@ -42,6 +47,10 @@ class Extractor:
 	"""
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
+		self.order_VI_VI()
+	
+	def order_VI_VI(self):
+		self._client.loop_stop()
 		self._running = False
 
 	"""
@@ -60,11 +69,18 @@ class Extractor:
 
 	"""
 	def on_connect(self, client, userdata, flags,rc):
-		print("Bad connection! Return code: " + rc if rc else "Connection established")
+		print("[*] Bad connection! Return code: " + rc if rc else f"[*] Connection to MQTT server {self.__host} established")
 
 	def on_message(self, client, userdata, msg):
 		message = (msg.payload.decode('utf-8'))
 		self.__message = self.pretify(message)
+
+	def on_subscribe(self, client, userdata, mid, granted_qos):
+		try:
+			for t, i in self.__topic:
+				print(f"[*] Broker successfully subscribed to {t}")
+		except Exception as e:
+			print(f"[*] Broker successfully subscribed to all the topics")
 
 	"""
 		This function connects to the MQTT server as a client with
@@ -87,21 +103,27 @@ class Extractor:
 
 	def connect_to_MQTT(self):
 		while self._running:
-			client = mqtt.Client('evgena')
+
+			self._client = mqtt.Client('evgena')
 			if self.__password != None:
-				client.username_pw_set(self.__username, password=self.__password)
-			client.on_connect = self.on_connect
-			client.on_message = self.on_message
-			client.connect(self.__host, self.__port)
-			client.subscribe(self.__topic)	
-			client.loop_forever()
+				self._client.username_pw_set(self.__username, password=self.__password)
+			self._client.on_connect = self.on_connect
+			self._client.on_message = self.on_message
+			self._client.on_subscribe = self.on_subscribe
+			self._client.connect(self.__host, self.__port)
+			self._client.subscribe(self.__topic)
+			if not self._connections_count:	
+				self._client.loop_start()
+				self._connections_count += 1
 
 	"""
 		this function is getter for __message
 	"""
 
 	def get_message(self):
-		return self.__message;
+		msg = self.__message
+		self.__message = None
+		return msg;
 
 
 	"""
@@ -110,4 +132,3 @@ class Extractor:
 
 	def pretify(self, msg):
 		return json.dumps(json.loads(msg), indent=4, sort_keys=True)
-
