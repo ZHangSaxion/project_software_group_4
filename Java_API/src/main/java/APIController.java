@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class APIController {
     @Autowired
     private SensorsRepository sensorsRepository;
+
+    private final String auth_code = "saxion_group_4";
     @Autowired
     private ReadingsRepository readingsRepository;
 
@@ -33,18 +35,21 @@ public class APIController {
 
     @GetMapping(path = "/all_sensor_location")
     @ResponseBody
-    public String getAllLocation() {
-        StringBuffer result = new StringBuffer();
+    public String getAllLocation(@RequestParam String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
 
-        result.append("{\"list\":[\n");
-        sensorsRepository.findAll().forEach(s -> {
-            result.append("{\n\"sensor_id\": \"" + s.getId() + "\",\n");
-            result.append("\n\"location\": \"" + s.getLocation() + "\"\n},\n");
-        });
-        result.deleteCharAt(result.length() - 2);
-        result.append("]\n}");
+            result.append("{\"list\":[\n");
+            sensorsRepository.findAll().forEach(s -> {
+                result.append("{\n\"sensor_id\": \"" + s.getId() + "\",\n");
+                result.append("\n\"location\": \"" + s.getLocation() + "\"\n},\n");
+            });
+            result.deleteCharAt(result.length() - 2);
+            result.append("]\n}");
 
-        return result.toString();
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/all_readings")
@@ -56,222 +61,259 @@ public class APIController {
 
     @GetMapping(path = "/now_sensor") // request time + last readings for each sensor
     @ResponseBody
-    public String getReadingsByTime() {
-        StringBuffer result = new StringBuffer();
-        result.append("{\n\t\"time_requested\":\"");
-        result.append(new Date() + "\",\n");
-        result.append("\"list\": [\n");
-        var allReadings = readingsRepository.findAll();
-        for (int numOfSensors = 1; numOfSensors <= 4; numOfSensors++) {
-            var readingList = new ArrayList<Readings>();
-            for (Readings r : allReadings) {
-                if (r.getSensor_id() == numOfSensors) {
-                    readingList.add(r);
+    public String getReadingsByTime(@RequestParam String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append("{\n\t\"time_requested\":\"");
+            result.append(new Date() + "\",\n");
+            result.append("\"list\": [\n");
+            var allReadings = readingsRepository.findAll();
+            for (int numOfSensors = 1; numOfSensors <= 4; numOfSensors++) {
+                var readingList = new ArrayList<Readings>();
+                for (Readings r : allReadings) {
+                    if (r.getSensor_id() == numOfSensors) {
+                        readingList.add(r);
+                    }
                 }
+                readingList.sort(new NewestReadingComparator().reversed());
+                var newestReading = readingList.get(0);
+                var allSensor = sensorsRepository.findAll();
+                String location = "unknown place";
+                for (Sensor s : allSensor) {
+                    if (s.getId() == newestReading.getSensor_id())
+                        location = s.getLocation();
+                }
+                result.append("{\n");
+                result.append("\"location\": \"" + location + "\",\n");
+                result.append("\"time\": \"" + ft.format(newestReading.getDate()) + "\",\n");
+                result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
+                result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
+                result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
+                result.append("},");
             }
-            readingList.sort(new NewestReadingComparator().reversed());
-            var newestReading = readingList.get(0);
-            var allSensor = sensorsRepository.findAll();
-            String location = "unknown place";
-            for (Sensor s : allSensor) {
-                if (s.getId() == newestReading.getSensor_id())
-                    location = s.getLocation();
-            }
-            result.append("{\n");
-            result.append("\"location\": \"" + location + "\",\n");
-            result.append("\"time\": \"" + ft.format(newestReading.getDate()) + "\",\n");
-            result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
-            result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
-            result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
-            result.append("},");
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_id_full")
     @ResponseBody
-    public String getReadingsBySensor(@RequestParam int id) {
-        StringBuffer result = new StringBuffer();
-        result.append(headerForGetReadingsById(id));
+    public String getReadingsBySensor(@RequestParam int id, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append(headerForGetReadingsById(id));
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id) {
-                result.append(fullInfoOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id) {
+                    result.append(fullInfoOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_id_ambient_light")
     @ResponseBody
-    public String getReadingsBySensorForAmbient(@RequestParam int id) {
-        StringBuffer result = new StringBuffer();
-        result.append(headerForGetReadingsById(id));
+    public String getReadingsBySensorForAmbient(@RequestParam int id, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append(headerForGetReadingsById(id));
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id) {
-                result.append(ambientLightoOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id) {
+                    result.append(ambientLightoOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_id_temperature")
     @ResponseBody
-    public String getReadingsBySensorForTemperature(@RequestParam int id) {
-        StringBuffer result = new StringBuffer();
-        result.append(headerForGetReadingsById(id));
+    public String getReadingsBySensorForTemperature(@RequestParam int id, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append(headerForGetReadingsById(id));
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id) {
-                result.append(temperatureOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id) {
+                    result.append(temperatureOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_id_pressure")
     @ResponseBody
-    public String getReadingsBySensorForPressure(@RequestParam int id) {
-        StringBuffer result = new StringBuffer();
-        result.append(headerForGetReadingsById(id));
+    public String getReadingsBySensorForPressure(@RequestParam int id, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append(headerForGetReadingsById(id));
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id) {
-                result.append(pressureOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id) {
+                    result.append(pressureOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
 
     @GetMapping(path = "/reading_from_place_full")
     @ResponseBody
-    public String getReadingsBySensorByPlace(@RequestParam String place) {
-        AtomicInteger id = new AtomicInteger(1);
-        sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().contains(place))
-                id.set(s.getId());
-        });
-        return getReadingsBySensor(id.get());
+    public String getReadingsBySensorByPlace(@RequestParam String place, String key) {
+        if (key.equals(auth_code)) {
+            AtomicInteger id = new AtomicInteger(1);
+            sensorsRepository.findAll().forEach(s -> {
+                if (s.getLocation().contains(place))
+                    id.set(s.getId());
+            });
+            return getReadingsBySensor(id.get(),key);
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_place_ambient_light")
     @ResponseBody
-    public String getReadingsBySensorForAmbientByPlace(@RequestParam String place) {
-        AtomicInteger id = new AtomicInteger(1);
-        sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().contains(place))
-                id.set(s.getId());
-        });
-        return getReadingsBySensorForAmbient(id.get());
+    public String getReadingsBySensorForAmbientByPlace(@RequestParam String place, String key) {
+        if (key.equals(auth_code)) {
+            AtomicInteger id = new AtomicInteger(1);
+            sensorsRepository.findAll().forEach(s -> {
+                if (s.getLocation().contains(place))
+                    id.set(s.getId());
+            });
+            return getReadingsBySensorForAmbient(id.get(),key);
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_place_temperature")
     @ResponseBody
-    public String getReadingsBySensorForTemperatureByPlace(@RequestParam String place) {
-        AtomicInteger id = new AtomicInteger(1);
-        sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().contains(place))
-                id.set(s.getId());
-        });
-        return getReadingsBySensorForTemperature(id.get());
+    public String getReadingsBySensorForTemperatureByPlace(@RequestParam String place, String key) {
+        if (key.equals(auth_code)) {
+            AtomicInteger id = new AtomicInteger(1);
+            sensorsRepository.findAll().forEach(s -> {
+                if (s.getLocation().contains(place))
+                    id.set(s.getId());
+            });
+            return getReadingsBySensorForTemperature(id.get(),key);
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/reading_from_place_pressure")
     @ResponseBody
-    public String getReadingsBySensorForPressureByPlace(@RequestParam String place) {
-        AtomicInteger id = new AtomicInteger(1);
-        sensorsRepository.findAll().forEach(s -> {
-            if (s.getLocation().contains(place))
-                id.set(s.getId());
-        });
-        return getReadingsBySensorForPressure(id.get());
+    public String getReadingsBySensorForPressureByPlace(@RequestParam String place, String key) {
+        if (key.equals(auth_code)) {
+            AtomicInteger id = new AtomicInteger(1);
+            sensorsRepository.findAll().forEach(s -> {
+                if (s.getLocation().contains(place))
+                    id.set(s.getId());
+            });
+            return getReadingsBySensorForPressure(id.get(),key);
+        } else
+            return "invalid key";
     }
 
     @GetMapping(path = "/recent_readings_1sensor_id")
     @ResponseBody
-    public String getReadingsByDays(@RequestParam int day, int id){
-        StringBuffer result = new StringBuffer();
-        result.append(headerForGetReadingsById(id));
+    public String getReadingsByDays(@RequestParam int day, int id, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append(headerForGetReadingsById(id));
 
-        var dateFrom = Calendar.getInstance();
-        dateFrom.add(Calendar.DATE,-day);
+            var dateFrom = Calendar.getInstance();
+            dateFrom.add(Calendar.DATE, -day);
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime())) {
-                result.append(fullInfoOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime())) {
+                    result.append(fullInfoOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
+
     @GetMapping(path = "/recent_readings_1sensor")
     @ResponseBody
-    public String getReadingsByDaysPlace(@RequestParam int day, String place){
-        StringBuffer result = new StringBuffer();
+    public String getReadingsByDaysPlace(@RequestParam int day, String place, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
 
-        AtomicInteger id = new AtomicInteger(0);
-        sensorsRepository.findAll().forEach(s -> {
-            if(s.getLocation().contains(place))
-                id.set(s.getId());
-        });
-        result.append(headerForGetReadingsById(id.get()));
+            AtomicInteger id = new AtomicInteger(0);
+            sensorsRepository.findAll().forEach(s -> {
+                if (s.getLocation().contains(place))
+                    id.set(s.getId());
+            });
+            result.append(headerForGetReadingsById(id.get()));
 
-        var dateFrom = Calendar.getInstance();
-        dateFrom.add(Calendar.DATE,-day);
+            var dateFrom = Calendar.getInstance();
+            dateFrom.add(Calendar.DATE, -day);
 
-        var readings = readingsRepository.findAll();
-        for (Readings r : readings) {
-            if (r.getSensor_id() == id.get() && r.getDate().after(dateFrom.getTime())) {
-                result.append(fullInfoOfAReading(r));
+            var readings = readingsRepository.findAll();
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id.get() && r.getDate().after(dateFrom.getTime())) {
+                    result.append(fullInfoOfAReading(r));
+                }
             }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\n]\n}");
-        return result.toString();
+            result.deleteCharAt(result.length() - 1);
+            result.append("\n]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
+
     @GetMapping(path = "/recent_readings")
     @ResponseBody
-    public String getReadingsByDayForAllSensors(@RequestParam int day){
-        StringBuffer result = new StringBuffer();
-        result.append("{\n");
+    public String getReadingsByDayForAllSensors(@RequestParam int day, String key) {
+        if (key.equals(auth_code)) {
+            StringBuffer result = new StringBuffer();
+            result.append("{\n");
 
-        var allSensor = new HashMap<Integer, String>();
-        sensorsRepository.findAll().forEach(s -> {
-            allSensor.put(s.getId(),s.getLocation());
-        });
-        result.append("\"list\":[\n");
+            var allSensor = new HashMap<Integer, String>();
+            sensorsRepository.findAll().forEach(s -> {
+                allSensor.put(s.getId(), s.getLocation());
+            });
+            result.append("\"list\":[\n");
 
-        for(int id : allSensor.keySet()) {
+            for (int id : allSensor.keySet()) {
 //            result.append("\"location\":" + allSensor.get(id) + ",\n");
-            result.append(getReadingsByDays(day,id));
-            result.append(",\n");
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append("]\n}");
-        return result.toString();
+                result.append(getReadingsByDays(day, id,key));
+                result.append(",\n");
+            }
+            result.deleteCharAt(result.length() - 1);
+            result.append("]\n}");
+            return result.toString();
+        } else
+            return "invalid key";
     }
 
 
     /**
-     *
      * @param id
      * @return
      */
@@ -290,7 +332,7 @@ public class APIController {
         return result.toString();
     }
 
-    private String fullInfoOfAReading(Readings r){
+    private String fullInfoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
@@ -301,7 +343,7 @@ public class APIController {
         return result.toString();
     }
 
-    private String temperatureOfAReading(Readings r){
+    private String temperatureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
@@ -310,7 +352,7 @@ public class APIController {
         return result.toString();
     }
 
-    private String ambientLightoOfAReading(Readings r){
+    private String ambientLightoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
@@ -318,7 +360,8 @@ public class APIController {
         result.append("},");
         return result.toString();
     }
-    private String pressureOfAReading(Readings r){
+
+    private String pressureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
         result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
