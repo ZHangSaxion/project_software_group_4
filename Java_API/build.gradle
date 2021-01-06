@@ -21,10 +21,15 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    // Add jsonArray to convert ResultSet to json style String.
-    implementation 'org.json:json:20171018'
 }
 
 test {
     useJUnitPlatform()
+}
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+wrapper{
+    gradleVersion = '6.7.1'
 }
