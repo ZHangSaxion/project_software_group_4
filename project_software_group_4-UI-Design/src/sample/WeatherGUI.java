@@ -6,25 +6,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class WeatherGUI {
     @FXML
-    public LineChart<String, Number> tempChart;
+    public LineChart<Number, Number> tempChart;
+    @FXML
+    public MenuItem config;
+
 
     public void initialize() {
-
-    }
-
-    public void addTemperature(XYChart.Series<String, Number> temperature) {
-        tempChart.getData().add(temperature);
-    }
-
-    public void removeTemperature(XYChart.Series<String, Number> temperature) {
-        tempChart.getData().remove(temperature);
+        System.out.println("initialize WeatherGUI");
     }
 
     public void openConfig(ActionEvent actionEvent) throws IOException {

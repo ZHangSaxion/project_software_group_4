@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="mainStage" minHeight="680.0" minWidth="1020.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.WeatherGUI">
     <stylesheets>
@@ -13,159 +27,140 @@
     <VBox alignment="TOP_CENTER" minWidth="1020.0" prefHeight="200.0" prefWidth="100.0">
         <MenuBar>
             <Menu id="menu" mnemonicParsing="false" text="Menu">
-                <MenuItem fx:id="config" mnemonicParsing="false" onAction="#openConfig" text="Config"/>
-                <SeparatorMenuItem/>
+                <MenuItem fx:id="config" mnemonicParsing="false" onAction="#openConfig" text="Config" />
+                <SeparatorMenuItem />
                 <Menu id="average" mnemonicParsing="false" text="Average">
-                    <MenuItem mnemonicParsing="false" text="Sensor 1"/>
-                    <MenuItem mnemonicParsing="false" text="Sensor 2"/>
-                    <MenuItem mnemonicParsing="false" text="Sensor 3"/>
-                    <MenuItem mnemonicParsing="false" text="Sensor 4"/>
-                    <MenuItem mnemonicParsing="false" text="Sensor 5"/>
+                    <MenuItem mnemonicParsing="false" text="Sensor 1" />
+                    <MenuItem mnemonicParsing="false" text="Sensor 2" />
+                    <MenuItem mnemonicParsing="false" text="Sensor 3" />
+                    <MenuItem mnemonicParsing="false" text="Sensor 4" />
+                    <MenuItem mnemonicParsing="false" text="Sensor 5" />
                 </Menu>
-                <SeparatorMenuItem/>
+                <SeparatorMenuItem />
                 <Menu id="last" mnemonicParsing="false" text="Last">
-                    <MenuItem mnemonicParsing="false" text="Hour"/>
-                    <MenuItem mnemonicParsing="false" text="Day"/>
-                    <MenuItem mnemonicParsing="false" text="Week"/>
-                    <MenuItem mnemonicParsing="false" text="Month"/>
+                    <MenuItem mnemonicParsing="false" text="Hour" />
+                    <MenuItem mnemonicParsing="false" text="Day" />
+                    <MenuItem mnemonicParsing="false" text="Week" />
+                    <MenuItem mnemonicParsing="false" text="Month" />
                 </Menu>
-                <SeparatorMenuItem/>
-                <MenuItem id="exit" mnemonicParsing="false" onAction="#exitMenu" text="Exit"/>
+                <SeparatorMenuItem />
+                <MenuItem id="exit" mnemonicParsing="false" onAction="#exitMenu" text="Exit" />
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
-                <MenuItem mnemonicParsing="false" text="User Manual"/>
+                <MenuItem mnemonicParsing="false" text="User Manual" />
             </Menu>
             <Menu mnemonicParsing="false" text="About">
-                <MenuItem mnemonicParsing="false" text="Credentials"/>
+                <MenuItem mnemonicParsing="false" text="Credentials" />
             </Menu>
         </MenuBar>
-        <GridPane id="mainGrid" alignment="center" hgap="10" minHeight="650.0" prefHeight="650.0" prefWidth="980.0"
-                  vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+        <GridPane id="mainGrid" alignment="center" hgap="10" minHeight="650.0" prefHeight="650.0" prefWidth="980.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
             <columnConstraints>
 
-                <ColumnConstraints minWidth="480.0" prefWidth="480.0"/>
-                <ColumnConstraints minWidth="480.0" prefWidth="480.0"/>
-                <ColumnConstraints/>
+                <ColumnConstraints minWidth="480.0" prefWidth="480.0" />
+                <ColumnConstraints minWidth="480.0" prefWidth="480.0" />
+                <ColumnConstraints />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0"/>
-                <RowConstraints maxHeight="300.0" minHeight="300.0" prefHeight="300.0"/>
-                <RowConstraints maxHeight="320.0" minHeight="320.0" prefHeight="300.0"/>
+                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" />
+                <RowConstraints maxHeight="300.0" minHeight="300.0" prefHeight="300.0" />
+                <RowConstraints maxHeight="320.0" minHeight="320.0" prefHeight="300.0" />
             </rowConstraints>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            <LineChart id="pressureCh" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure"
-                       GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1"
-                       GridPane.valignment="CENTER">
+            <LineChart id="pressureCh" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                 <xAxis>
-                    <NumberAxis side="BOTTOM"/>
+                    <NumberAxis side="BOTTOM" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis side="LEFT" />
                 </yAxis>
                 <GridPane.margin>
-                    <Insets/>
+                    <Insets />
                 </GridPane.margin>
             </LineChart>
 
-            <LineChart id="tempCh" fx:id="tempChart" prefHeight="280.0" prefWidth="450.0" title="Temperature"
-                       GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1"
-                       GridPane.valignment="CENTER">
+            <LineChart id="tempCh" fx:id="tempChart" prefHeight="280.0" prefWidth="450.0" title="Temperature" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                 <xAxis>
-                    <NumberAxis side="BOTTOM"/>
+                    <NumberAxis side="BOTTOM" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis side="LEFT" />
                 </yAxis>
             </LineChart>
 
-            <LineChart id="lightCh" prefHeight="280.0" prefWidth="450.0" title="Ambient Light"
-                       GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2"
-                       GridPane.valignment="CENTER">
+            <LineChart id="lightCh" prefHeight="280.0" prefWidth="450.0" title="Ambient Light" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                 <xAxis>
-                    <NumberAxis side="BOTTOM"/>
+                    <NumberAxis side="BOTTOM" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis side="LEFT" />
                 </yAxis>
             </LineChart>
 
-            <VBox alignment="TOP_CENTER" minHeight="300.0" prefWidth="480" GridPane.columnIndex="1"
-                  GridPane.rowIndex="2">
+            <VBox alignment="TOP_CENTER" minHeight="300.0" prefWidth="480" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <GridPane.margin>
-                    <Insets bottom="5.0" left="5.0" top="10.0"/>
+                    <Insets bottom="5.0" left="5.0" top="10.0" />
                 </GridPane.margin>
                 <padding>
-                    <Insets bottom="5.0" left="10.0" right="15.0" top="20.0"/>
+                    <Insets bottom="5.0" left="10.0" right="15.0" top="20.0" />
                 </padding>
 
 
                 <GridPane id="gridData" alignment="TOP_CENTER">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="66.0" minWidth="10.0" prefWidth="57.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0"
-                                           prefWidth="153.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="66.0" minWidth="10.0" prefWidth="57.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="153.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="40.0" prefHeight="50.0"/>
-                        <RowConstraints minHeight="40.0" prefHeight="30.0"/>
-                        <RowConstraints minHeight="40.0" prefHeight="50.0"/>
+                        <RowConstraints minHeight="40.0" prefHeight="50.0" />
+                        <RowConstraints minHeight="40.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="40.0" prefHeight="50.0" />
 
                     </rowConstraints>
                     <padding>
-                        <Insets bottom="10.0" left="5.0" top="5.0"/>
+                        <Insets bottom="10.0" left="5.0" top="5.0" />
                     </padding>
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
-                    <Label prefHeight="30.0" text="From" textAlignment="CENTER" GridPane.columnIndex="1"
-                           GridPane.rowIndex="0"/>
-                    <ComboBox id="timeFrom" editable="true" minWidth="90.0" prefWidth="80.0"
-                              GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="0"
-                              GridPane.valignment="CENTER"/>
-                    <Label prefHeight="30.0" text="To" textAlignment="CENTER" GridPane.columnIndex="1"
-                           GridPane.rowIndex="2"/>
-                    <ComboBox id="timeTo" editable="true" minWidth="90.0" prefWidth="80.0"
-                              GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2"
-                              GridPane.valignment="CENTER"/>
+                    <Label prefHeight="30.0" text="From" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <ComboBox id="timeFrom" editable="true" minWidth="90.0" prefWidth="80.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                    <Label prefHeight="30.0" text="To" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <ComboBox id="timeTo" editable="true" minWidth="90.0" prefWidth="80.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
 
-                    <Label prefHeight="30.0" text="From" textAlignment="CENTER" GridPane.columnIndex="3"
-                           GridPane.rowIndex="0"/>
-                    <DatePicker id="dateFrom" minWidth="120.0" prefWidth="120.0" GridPane.columnIndex="4"
-                                GridPane.rowIndex="0"/>
-                    <Label prefHeight="30.0" text="To" textAlignment="CENTER" GridPane.columnIndex="3"
-                           GridPane.rowIndex="2"/>
-                    <DatePicker id="dateTo" minWidth="120.0" prefWidth="120.0" GridPane.columnIndex="4"
-                                GridPane.rowIndex="2"/>
+                    <Label prefHeight="30.0" text="From" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                    <DatePicker id="dateFrom" minWidth="120.0" prefWidth="120.0" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                    <Label prefHeight="30.0" text="To" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                    <DatePicker id="dateTo" minWidth="120.0" prefWidth="120.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
 
                 </GridPane>
                 <HBox alignment="CENTER" spacing="34.0">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                     </VBox.margin>
                     <padding>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </padding>
-                    <Button id="lastH" minHeight="30" minWidth="80" text="Last Hour"/>
-                    <Button id="lastD" minHeight="30" minWidth="80" text="Last Day"/>
-                    <Button id="lastW" minHeight="30" minWidth="80" text="Last Week"/>
-                    <Button id="lastM" minHeight="30" minWidth="80" text="Last Month"/>
+                    <Button id="lastH" minHeight="30" minWidth="80" text="Last Hour" />
+                    <Button id="lastD" minHeight="30" minWidth="80" text="Last Day" />
+                    <Button id="lastW" minHeight="30" minWidth="80" text="Last Week" />
+                    <Button id="lastM" minHeight="30" minWidth="80" text="Last Month" />
                 </HBox>
                 <HBox alignment="CENTER_RIGHT">
                     <VBox.margin>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </VBox.margin>
                     <padding>
-                        <Insets left="5.0" right="5.0" top="10.0"/>
+                        <Insets left="5.0" right="5.0" top="10.0" />
                     </padding>
-                    <Button id="startBtn" contentDisplay="CENTER" minHeight="30.0" minWidth="90.0"
-                            mnemonicParsing="false" prefWidth="100.0" text="START">
+               <CheckBox mnemonicParsing="false" onAction="#toggleGraph" text="toggle" />
+                    <Button id="startBtn" contentDisplay="CENTER" minHeight="30.0" minWidth="90.0" mnemonicParsing="false" prefWidth="100.0" text="START">
                         <HBox.margin>
-                            <Insets right="8.0" top="5.0"/>
+                            <Insets right="8.0" top="5.0" />
                         </HBox.margin>
                     </Button>
 
