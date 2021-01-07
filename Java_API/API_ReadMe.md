@@ -22,7 +22,7 @@ The reason why this function is not requiring key verify is because user should 
     
 ### 2. Get all records of readings
 This function will list all the records of readings in database with their full details.  
-It is using the path:  
+It is using the path with parameter <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/all_readings?key=<key> ```  
 For example:
 > https://wsgroup4.herokuapp.com/weather_station_java_api/all_readings?key=saxion_group_4
@@ -47,7 +47,7 @@ To check the newest sensors from this [link](https://wsgroup4.herokuapp.com/weat
   
 ### 3. Get newest records of readings for all the sensors
 This function will list the newsst records of readings in database with their full details for each sensor.  
-It is using the path:  
+It is using the path with parameter <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/now_sensor?key=<key> ```  
 For example:
 > https://wsgroup4.herokuapp.com/weather_station_java_api/now_sensor?key=saxion_group_4
@@ -98,7 +98,7 @@ To check the newest sensors from this [link](https://wsgroup4.herokuapp.com/weat
   
 ### 4. Get all records of readings for one sensor which id number is known.  
 This function will list all the records of readings in database with their full details.  
-It is using the path:  
+It is using the path with parameter <id> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_full?id=<id>&key=<key>  ```  
 For example: 
 > https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_full?id=1&key=saxion_group_4 
@@ -123,7 +123,7 @@ The information will looks like this:
     
 ### 5. Get ambient light records of readings for one sensor which id number is known.  
 This function will list all the records of readings in database with their ambient light value only.  
-It is using the path:  
+It is using the path with parameter <id> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_ambient_light?id=<id>&key=<key>  ```  
 For example: 
 > https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_ambient_light?id=1&key=saxion_group_4
@@ -146,7 +146,7 @@ The information will looks like this:
   
 ### 6. Get temperature records of readings for one sensor which id number is known.  
 This function will list all the records of readings in database with their temperature value only.  
-It is using the path:  
+It is using the path with parameter <id> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_temperature?id=<id>&key=<key>  ```  
 For example: 
 > https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_temperature?id=1&key=saxion_group_4 
@@ -169,7 +169,7 @@ The information will looks like this:
   
 ### 7. Get pressure records of readings for one sensor which id number is known.  
 This function will list all the records of readings in database with their pressure value only.  
-It is using the path:  
+It is using the path with parameter <id> and <key>:  
  ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_pressure?id=<id>&key=<key>  ```  
 For example: 
 > https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_pressure?id=1&key=saxion_group_4
@@ -192,7 +192,7 @@ The information will looks like this:
      
 ### 8. Get all records of readings for one sensor which location is known.  
 This function will list all the records of readings in database with their full details.  
-It is using the path:  
+It is using the path with parameter <place> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_place_full?place=<place>&key=<key>  ```  
 For example: 
 > https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_place_full?place=pygarage&key=saxion_group_4  
@@ -217,7 +217,7 @@ The information will looks like this:
      
 ### 9. Get ambient light records of readings for one sensor which location is known.
 This function will list all the records of readings in database with their ambient light value only.  
-It is using the path:  
+It is using the path with parameter <place> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_place_ambient_light?place=<place>&key=<key>  ```  
 This function works same as the one using id number as function 5.  
   
@@ -225,7 +225,7 @@ This function works same as the one using id number as function 5.
   
 ### 10. Get temperature records of readings for one sensor which location is known.
 This function will list all the records of readings in database with their temperature value only.  
-It is using the path:  
+It is using the path with parameter <place> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_id_ambient_light?place=<place>&key=<key>  ```  
 This function works same as the one using id number as function 6.  
   
@@ -233,7 +233,7 @@ This function works same as the one using id number as function 6.
   
 ### 11. Get pressure records of readings for one sensor which location is known.
 This function will list all the records of readings in database with their pressure value only.  
-It is using the path:  
+It is using the path with parameter <place> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/reading_from_place_pressure?place=<place>&key=<key>  ```  
 This function works same as the one using id number as function 7.  
   
@@ -241,7 +241,7 @@ This function works same as the one using id number as function 7.
   
 ### 12. Get newest records of readings for one sensor which id number is known in last given days.
 This function will list the newest records of readings of required one sensor with their all details limited by given number of days.  
-It is using the path:  
+It is using the path with parameter <day>, <id> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent_readings_1sensor_id?day=<day>&id=<id>&key=<key>  ```  
 For example: 
 > http://wsgroup4.herokuapp.com/weather_station_java_api/recent_readings_1sensor_id?day=30&id=1&key=saxion_group_4 
@@ -266,7 +266,7 @@ The information will looks like this:
   
 ### 13. Get newest records of readings for one sensor which location is known in last given days.
 This function will list the newest records of readings of required one sensor with their all details limited by given number of days.  
-It is using the path:  
+It is using the path with parameter <day>, <place> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent_readings_1sensor?day=<day>&place=<place>&key=<key>  ```  
 This function works same as the one using id number as function 12.   
   
@@ -274,7 +274,7 @@ This function works same as the one using id number as function 12.
   
 ### 14. Get newest records of readings for all supported sensors in last given days.
 This function will list the newest records of readings of required one sensor with their all details limited by given number of days.  
-It is using the path:  
+It is using the path with parameter <day> and <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent_readings?day=<day>&key=<key>  ```  
 This function works similar as function 12.   
   
@@ -282,7 +282,7 @@ This function works similar as function 12.
   
 ### 15. Get locations of all supported sensors.
 This function will list the location of all sensors stored in the database.  
-It is using the path:  
+It is using the path with parameter <key>:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/all_sensor_location?key=<key>  ```  
 For example:
 > https://wsgroup4.herokuapp.com/weather_station_java_api/all_sensor_location?key=saxion_group_4  
