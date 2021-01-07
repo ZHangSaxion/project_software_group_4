@@ -15,24 +15,42 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * The controller class is using libraries from Spring
+ * to response information requirements from user interfaces.
+ *
+ * @author Ziru Hang
+ * @version 1.0
+ * @since 02-12-2020
+ */
 @Controller
 @RequestMapping(value = "/weather_station_java_api")
 public class APIController {
     @Autowired
     private SensorsRepository sensorsRepository;
 
-    private final String auth_code = "saxion_group_4";
     @Autowired
     private ReadingsRepository readingsRepository;
 
-    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private final String auth_code = "saxion_group_4";
+    private final SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
+    /**
+     * List all the information saved in the table "sensor" in the database.
+     *
+     * @return Iterable<Sensor> This returns an iterable list of sensors' information. The output will automatically in json style.
+     */
     @GetMapping(path = "/all_sensor")
     @ResponseBody
     public Iterable<Sensor> getAllSensors() {
         return sensorsRepository.findAll();
     }
 
+    /**
+     * List the location column saved in the table "sensor" in the database.
+     *
+     * @return String This returns a string listing of sensors' locations and its name in json style when the requirement is valid.
+     */
     @GetMapping(path = "/all_sensor_location")
     @ResponseBody
     public String getAllLocation(@RequestParam String key) {
@@ -52,13 +70,26 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List all the information saved in the table "readings" in the database.
+     *
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return Iterable<Readings> This returns an iterable list of readings' information. The output will automatically in json style.
+     */
     @GetMapping(path = "/all_readings")
     @ResponseBody
-    public Iterable<Readings> getAllReadings() {
-        return readingsRepository.findAll();
+    public Iterable<Readings> getAllReadings(@RequestParam String key) {
+        if (key.equals(auth_code))
+            return readingsRepository.findAll();
+        return null;
     }
 
-
+    /**
+     * List the all the information of the newest records saved in the table "sensor" in the database.
+     *
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing of sensors' locations and its name in json style when the requirement is valid.
+     */
     @GetMapping(path = "/now_sensor") // request time + last readings for each sensor
     @ResponseBody
     public String getReadingsByTime(@RequestParam String key) {
@@ -98,6 +129,13 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List the all the information of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param id  The id number of the sensor which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_id_full")
     @ResponseBody
     public String getReadingsBySensor(@RequestParam int id, String key) {
@@ -118,6 +156,13 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List the values of ambient light with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param id  The id number of the sensor which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_id_ambient_light")
     @ResponseBody
     public String getReadingsBySensorForAmbient(@RequestParam int id, String key) {
@@ -138,6 +183,13 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List the values of temperature with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param id  The id number of the sensor which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_id_temperature")
     @ResponseBody
     public String getReadingsBySensorForTemperature(@RequestParam int id, String key) {
@@ -158,6 +210,13 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List the values of pressure with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param id  The id number of the sensor which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_id_pressure")
     @ResponseBody
     public String getReadingsBySensorForPressure(@RequestParam int id, String key) {
@@ -178,7 +237,13 @@ public class APIController {
             return "invalid key";
     }
 
-
+    /**
+     * List the all of information of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param place The name of the sensor locating which is selected by user.
+     * @param key   This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_place_full")
     @ResponseBody
     public String getReadingsBySensorByPlace(@RequestParam String place, String key) {
@@ -188,11 +253,18 @@ public class APIController {
                 if (s.getLocation().contains(place))
                     id.set(s.getId());
             });
-            return getReadingsBySensor(id.get(),key);
+            return getReadingsBySensor(id.get(), key);
         } else
             return "invalid key";
     }
 
+    /**
+     * List the values of ambient light with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param place The name of the sensor locating which is selected by user.
+     * @param key   This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_place_ambient_light")
     @ResponseBody
     public String getReadingsBySensorForAmbientByPlace(@RequestParam String place, String key) {
@@ -202,11 +274,18 @@ public class APIController {
                 if (s.getLocation().contains(place))
                     id.set(s.getId());
             });
-            return getReadingsBySensorForAmbient(id.get(),key);
+            return getReadingsBySensorForAmbient(id.get(), key);
         } else
             return "invalid key";
     }
 
+    /**
+     * List the values of temperature with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param place The name of the sensor locating which is selected by user.
+     * @param key   This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_place_temperature")
     @ResponseBody
     public String getReadingsBySensorForTemperatureByPlace(@RequestParam String place, String key) {
@@ -216,11 +295,18 @@ public class APIController {
                 if (s.getLocation().contains(place))
                     id.set(s.getId());
             });
-            return getReadingsBySensorForTemperature(id.get(),key);
+            return getReadingsBySensorForTemperature(id.get(), key);
         } else
             return "invalid key";
     }
 
+    /**
+     * List the values of pressure with date of each record saved in the table "reading" in the database for a specific sensor.
+     *
+     * @param place The name of the sensor locating which is selected by user.
+     * @param key   This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/reading_from_place_pressure")
     @ResponseBody
     public String getReadingsBySensorForPressureByPlace(@RequestParam String place, String key) {
@@ -230,11 +316,21 @@ public class APIController {
                 if (s.getLocation().contains(place))
                     id.set(s.getId());
             });
-            return getReadingsBySensorForPressure(id.get(),key);
+            return getReadingsBySensorForPressure(id.get(), key);
         } else
             return "invalid key";
     }
 
+    /**
+     * List all of the information of the newest records
+     * saved in the table "reading" in the database for a specific sensor
+     * limited by date.
+     *
+     * @param day number of days which is selected by user.
+     * @param id  The id number of the sensor which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/recent_readings_1sensor_id")
     @ResponseBody
     public String getReadingsByDays(@RequestParam int day, int id, String key) {
@@ -258,6 +354,16 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List all of the information of the newest records
+     * saved in the table "reading" in the database for a specific sensor
+     * limited by date.
+     *
+     * @param day   number of days which is selected by user.
+     * @param place The name of the sensor locating which is selected by user.
+     * @param key   This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/recent_readings_1sensor")
     @ResponseBody
     public String getReadingsByDaysPlace(@RequestParam int day, String place, String key) {
@@ -287,6 +393,15 @@ public class APIController {
             return "invalid key";
     }
 
+    /**
+     * List all of the information of the newest records
+     * saved in the table "reading" in the database for all sensor
+     * limited by date.
+     *
+     * @param day number of days which is selected by user.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     @GetMapping(path = "/recent_readings")
     @ResponseBody
     public String getReadingsByDayForAllSensors(@RequestParam int day, String key) {
@@ -302,7 +417,7 @@ public class APIController {
 
             for (int id : allSensor.keySet()) {
 //            result.append("\"location\":" + allSensor.get(id) + ",\n");
-                result.append(getReadingsByDays(day, id,key));
+                result.append(getReadingsByDays(day, id, key));
                 result.append(",\n");
             }
             result.deleteCharAt(result.length() - 1);
@@ -314,8 +429,10 @@ public class APIController {
 
 
     /**
-     * @param id
-     * @return
+     * Create a head in json style for required information of one specific sensor.
+     *
+     * @param id The id number of the sensor which is selected by user.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
      */
     private String headerForGetReadingsById(long id) {
         StringBuffer result = new StringBuffer();
@@ -332,6 +449,12 @@ public class APIController {
         return result.toString();
     }
 
+    /**
+     * Convert a reading into String on json format with its all information.
+     *
+     * @param r A reading record needs to be print in json style string.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     private String fullInfoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
@@ -343,6 +466,12 @@ public class APIController {
         return result.toString();
     }
 
+    /**
+     * Convert a reading into String on json format including its temperature value only.
+     *
+     * @param r A reading record needs to be print in json style string.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     private String temperatureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
@@ -352,6 +481,12 @@ public class APIController {
         return result.toString();
     }
 
+    /**
+     * Convert a reading into String on json format including its ambient light value only.
+     *
+     * @param r A reading record needs to be print in json style string.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     private String ambientLightoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
@@ -361,6 +496,12 @@ public class APIController {
         return result.toString();
     }
 
+    /**
+     * Convert a reading into String on json format including its pressure value only.
+     *
+     * @param r A reading record needs to be print in json style string.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
     private String pressureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
