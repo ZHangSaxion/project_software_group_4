@@ -1,0 +1,48 @@
+.root{
+    -fx-background-color: darkgrey;
+    -fx-alignment: center;
+}
+.label{
+    -fx-font-size: 12;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5),0,0,0,1);
+}
+#mainStage{
+    -fx-border-style: solid;
+    -fx-border-color: royalblue;
+}
+
+#gridData{
+    -fx-border-style: solid;
+    -fx-border-color: royalblue;
+}
+.button{
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+}
+.button:hover{
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+#textEx {
+    -fx-font-size: 24;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-fill: #818181;
+    -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0.0, 0, 2);
+}
+#textQ {
+    -fx-font-size: 24;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-fill: #818181;
+    -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0.0, 0, 2);
+}
+
