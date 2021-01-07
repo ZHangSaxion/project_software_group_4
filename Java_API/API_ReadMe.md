@@ -14,8 +14,10 @@ The information will looks like this:
     }
 ]
 ```
+  
 To check the newest sensors from this [link](https://wsgroup4.herokuapp.com/weather_station_java_api/all_sensor).  
 The reason why this function is not requiring key verify is because user should have right to know whether this resful api can offer records in the location they want.
+  
 ---
     
 ### 2. Get all records of readings
