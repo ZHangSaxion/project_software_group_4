@@ -276,7 +276,7 @@ This function works same as the one using id number as function 12.
 This function will list the newest records of readings of required one sensor with their all details limited by given number of days.  
 It is using the path:  
 ``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent_readings?day=<day>&key=<key>  ```  
-This function works same as the one using id number as function 12.   
+This function works similar as function 12.   
   
 ---  
   
