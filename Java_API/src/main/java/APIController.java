@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +32,6 @@ public class APIController {
     private ReadingsRepository readingsRepository;
 
     private final String auth_code = "saxion_group_4";
-    private final SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     /**
      * List all the information saved in the table "sensor" in the database.
@@ -116,7 +114,7 @@ public class APIController {
                 }
                 result.append("{\n");
                 result.append("\"location\": \"" + location + "\",\n");
-                result.append("\"time\": \"" + ft.format(newestReading.getDate()) + "\",\n");
+                result.append("\"time\": \"" + newestReading.getDate().getTime()+ "\",\n");
                 result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
                 result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
                 result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
@@ -458,7 +456,7 @@ public class APIController {
     private String fullInfoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + ",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
@@ -475,7 +473,7 @@ public class APIController {
     private String temperatureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + "\n");
         result.append("},");
         return result.toString();
@@ -490,7 +488,7 @@ public class APIController {
     private String ambientLightoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + "\n");
         result.append("},");
         return result.toString();
@@ -505,7 +503,7 @@ public class APIController {
     private String pressureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + ft.format(r.getDate()) + "\",\n");
+        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
         result.append("},");
         return result.toString();
