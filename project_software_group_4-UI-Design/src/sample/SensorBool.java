@@ -1,10 +1,14 @@
 package sample;
 
-public class SensorBools {
+public class SensorBool {
     private Sensor sensor;
     private boolean temperature, pressure, ambientLight;
 
-    public SensorBools(Sensor sensor, boolean temperature, boolean pressure, boolean ambientLight) {
+    public SensorBool(Sensor sensor) {
+        this.sensor = sensor;
+    }
+
+    public SensorBool(Sensor sensor, boolean temperature, boolean pressure, boolean ambientLight) {
         this.sensor = sensor;
         this.temperature = temperature;
         this.pressure = pressure;
@@ -41,5 +45,15 @@ public class SensorBools {
 
     public void setAmbientLight(boolean ambientLight) {
         this.ambientLight = ambientLight;
+    }
+
+    @Override
+    public String toString() {
+        return "SensorBool{" +
+                "sensor=" + sensor +
+                ", temperature=" + temperature +
+                ", pressure=" + pressure +
+                ", ambientLight=" + ambientLight +
+                '}';
     }
 }

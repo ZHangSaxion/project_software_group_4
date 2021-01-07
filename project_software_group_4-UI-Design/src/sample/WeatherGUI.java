@@ -29,6 +29,7 @@ public class WeatherGUI {
 
     public void initialize() {
         updateReadings();
+
     }
 
     public void updateReadings() {
@@ -45,6 +46,7 @@ public class WeatherGUI {
                     addPressureGraph(id);
                     addAmbientLightGraph(id);
                 });
+        User.getSensorBools().forEach(System.out::println);
     }
 
     public void addTemperatureGraph(int sensor) {

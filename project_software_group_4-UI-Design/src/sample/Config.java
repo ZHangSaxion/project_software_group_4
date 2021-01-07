@@ -3,14 +3,15 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Config {
@@ -26,9 +27,11 @@ public class Config {
     @FXML
     public VBox sensorList;
 
-    private List<Integer> temperatureSensors;
-    private List<Integer> pressureSensors;
-    private List<Integer> ambientLightSensors;
+    private List<SensorBool> sensorBools;
+
+//    private List<Integer> temperatureSensors;
+//    private List<Integer> pressureSensors;
+//    private List<Integer> ambientLightSensors;
 
     private List<Sensor> sensors;
 //    private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
@@ -40,9 +43,8 @@ public class Config {
     public void initialize() {
         var parser = new Parser();
         sensors = parser.getSensors();
-        temperature.setDisable(true);
-        pressure.setDisable(true);
-        ambientLight.setDisable(true);
+        sensorBools = new ArrayList<>();
+        sensors.forEach(sensor -> sensorBools.add(new SensorBool(sensor)));
 //        choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
 //            if(observableValue == null) {
 //                temperature.setDisable(true);
@@ -102,23 +104,21 @@ public class Config {
         System.out.println("manageChoiceBox");
         if (!choiceBox.getItems().contains(chk.getText())) {
             choiceBox.getItems().add(chk.getText());
+            sensorBools.add(new SensorBool(sensors.stream().filter(sensor -> sensor.getLocation().equals(chk.getText())).collect(Collectors.toList()).get(0)));
         } else {
             choiceBox.getItems().remove(chk.getText());
+            sensorBools.remove(new SensorBool(sensors.stream().filter(sensor -> sensor.getLocation().equals(chk.getText())).collect(Collectors.toList()).get(0)));
         }
     }
 
-//    public void updateTemperatureGraphs(ActionEvent e) {
-//        var chk = (CheckBox) e.getSource();
-//        var sensor = sensors.stream()
-//                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-//                .collect(Collectors.toList())
-//                .get(0)
-//                .getId();
-//        if(chk.isSelected()) {
-//            WeatherGUI.addTemperatureGraph(sensor);
-//        } else {
-//            WeatherGUI.removeTemperatureGraph(sensor);
-//        }
+    public void updateTemperatureGraphs(ActionEvent e) {
+        var chk = (CheckBox) e.getSource();
+        var sensor = sensors.stream()
+                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
+                .collect(Collectors.toList())
+                .get(0)
+                .getId();
+        sensorBools.get(sensor).setTemperature(chk.isSelected());
 //        System.out.println("Action performed on checkbox: " + chk.getText());
 //        if(choiceBox.getValue() != null) {
 //            choiceBox.getItems().forEach(item -> {
@@ -136,35 +136,27 @@ public class Config {
 //        else if (choiceBox.getValue().matches(choiceBox.getItems().get(2))) {
 //            System.out.println("Worked for: " + choiceBox.getItems().get(2));
 //        }
-//    }
+    }
 
-//    public void updatePressureGraphs(ActionEvent e) {
-//        var chk = (CheckBox) e.getSource();
-//        var sensor = sensors.stream()
-//                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-//                .collect(Collectors.toList())
-//                .get(0)
-//                .getId();
-//        if(chk.isSelected()) {
-//            WeatherGUI.addPressureGraph(sensor);
-//        } else {
-//            WeatherGUI.removePressureGraph(sensor);
-//        }
-//    }
-//
-//    public void updateAmbientLightGraphs(ActionEvent e) {
-//        var chk = (CheckBox) e.getSource();
-//        var sensor = sensors.stream()
-//                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-//                .collect(Collectors.toList())
-//                .get(0)
-//                .getId();
-//        if(chk.isSelected()) {
-//            WeatherGUI.addAmbientLightGraph(sensor);
-//        } else {
-//            WeatherGUI.removeAmbientLightGraph(sensor);
-//        }
-//    }
+    public void updatePressureGraphs(ActionEvent e) {
+        var chk = (CheckBox) e.getSource();
+        var sensor = sensors.stream()
+                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
+                .collect(Collectors.toList())
+                .get(0)
+                .getId();
+        sensorBools.get(sensor).setPressure(chk.isSelected());
+    }
+
+    public void updateAmbientLightGraphs(ActionEvent e) {
+        var chk = (CheckBox) e.getSource();
+        var sensor = sensors.stream()
+                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
+                .collect(Collectors.toList())
+                .get(0)
+                .getId();
+        sensorBools.get(sensor).setAmbientLight(chk.isSelected());
+    }
 
 //    public void configureCheckBox(CheckBox checkBox) {
 //        if (checkBox.isSelected()) {
@@ -186,7 +178,7 @@ public class Config {
 //        });
 //    }
 
-//    public void updateSensorLists(ActionEvent e) {
+    public void updateSensorLists(ActionEvent e) {
 //        temperatureSensors = WeatherGUI.temperatureGraphs.getData().stream()
 //                .map(graph ->
 //                        sensors.stream()
@@ -214,10 +206,11 @@ public class Config {
 //                                .getId()
 //                )
 //                .collect(Collectors.toList());
-//        ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
-//    }
-//
-//    public void returnBack(ActionEvent e) {
+        User.setSensorBools(sensorBools);
+        ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
+    }
+
+    public void returnBack(ActionEvent e) {
 //        WeatherGUI.temperatureGraphs.getData().removeIf(graph ->
 //            !temperatureSensors.contains(Integer.valueOf(graph.getName()))
 //        );
@@ -227,8 +220,8 @@ public class Config {
 //        WeatherGUI.ambientLightGraphs.getData().removeIf(graph ->
 //            !ambientLightSensors.contains(Integer.valueOf(graph.getName()))
 //        );
-//        ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
-//    }
+        ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
+    }
 
 
 
