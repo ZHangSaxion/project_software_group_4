@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Reading {
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private int id;
     private int sensor_id;
-    private int ambient_light;
+    private double ambient_light;
     private double temperature;
     private String date;
-    private double a_pressure;
+    private double b_pressure;
 
     /**
      *
@@ -29,10 +30,10 @@ public class Reading {
 
     /**
      *
-     * @return ambient light value, values range from 0 to 255 including
+     * @return ambient light value, values range from 0.0 to 100.0 including
      */
-    public int getAmbient_light() {
-        return ambient_light;
+    public double getAmbient_light() {
+        return (double) Math.round(ambient_light / 2.55 * 10) / 10;
     }
 
     /**
@@ -48,18 +49,19 @@ public class Reading {
      * @return a LocalDateTime object used in other functions, formatted as ISO_DATE_TIME
      */
     public LocalDateTime getDate() {
-        return LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        return LocalDateTime.parse(date, format);
     }
 
     /**
      *
      * @return atmospheric pressure, single decimal precision
      */
-    public double getA_pressure() {
-        return a_pressure;
+    public double getB_pressure() {
+        return b_pressure;
     }
 
-    /** compares two readings to look if they are identical
+    /**
+     * compares two readings to look if they are identical
      *
      * @param o the second reading
      * @return true if readings are identical, false otherwise
@@ -74,7 +76,7 @@ public class Reading {
                 reading.ambient_light == ambient_light &&
                 reading.temperature == temperature &&
                 reading.date.equals(date) &&
-                reading.a_pressure == a_pressure;
+                reading.b_pressure == b_pressure;
     }
 
     /**
@@ -89,7 +91,7 @@ public class Reading {
                 ",\"ambient_light\":" + ambient_light +
                 ",\"temperature\":" + temperature +
                 ",\"date\":\"" + date + '\"' +
-                ",\"a_pressure\":" + a_pressure +
+                ",\"a_pressure\":" + b_pressure +
                 '}';
     }
 }

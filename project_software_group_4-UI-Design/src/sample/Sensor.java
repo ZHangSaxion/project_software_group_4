@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Sensor {
-    private int id;
+    private int sensor_id;
     private String location;
     private String date;
 
@@ -13,7 +13,7 @@ public class Sensor {
      * @return a unique integer id
      */
     public int getId() {
-        return id;
+        return sensor_id;
     }
 
     /**
@@ -32,7 +32,8 @@ public class Sensor {
         return LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
     }
 
-    /** compares two sensors to look if they are identical
+    /**
+     * compares two sensors to look if they are identical
      *
      * @param o the second sensor
      * @return true if sensors are identical, false otherwise
@@ -42,7 +43,7 @@ public class Sensor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         var sensor = (Sensor) o;
-        return sensor.id == id &&
+        return sensor.sensor_id == sensor_id &&
                 sensor.location.equals(location) &&
                 sensor.date.equals(date);
     }
@@ -54,7 +55,7 @@ public class Sensor {
     @Override
     public String toString() {
         return '{' +
-                "\"id\":" + id +
+                "\"id\":" + sensor_id +
                 ",\"location\":\"" + location + '\"' +
                 ",\"date\":" + date +
                 '}';

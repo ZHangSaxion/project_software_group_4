@@ -11,218 +11,112 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Config {
-
     @FXML
     public CheckBox temperature;
+
     @FXML
     public CheckBox pressure;
+
     @FXML
     public CheckBox ambientLight;
+
     @FXML
     public ChoiceBox<String> choiceBox;
+
     @FXML
     public VBox sensorList;
 
+    private List<Sensor> sensors;
     private List<SensorBool> sensorBools;
 
-//    private List<Integer> temperatureSensors;
-//    private List<Integer> pressureSensors;
-//    private List<Integer> ambientLightSensors;
-
-    private List<Sensor> sensors;
-//    private final ObservableSet<CheckBox> selectedCheckBoxes = FXCollections.observableSet();
-//    private final ObservableSet<CheckBox> unselectedCheckBoxes = FXCollections.observableSet();
-//
-//    private final int maxNumSelected = 3;
-//    private final IntegerBinding numCheckBoxesSelected = Bindings.size(selectedCheckBoxes);
-
     public void initialize() {
-        var parser = new Parser();
-        sensors = parser.getSensors();
+        choiceBox.getItems().add("all sensors");
+        choiceBox.setValue("all sensors");
+        choiceBox.setOnAction(this::updateButtonsFromChoiceBox);
+        sensors = Parser.getLocations();
         sensorBools = new ArrayList<>();
-        sensors.forEach(sensor -> sensorBools.add(new SensorBool(sensor)));
-//        choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
-//            if(observableValue == null) {
-//                temperature.setDisable(true);
-//                pressure.setDisable(true);
-//                ambientLight.setDisable(true);
-//            } else {
-//                temperature.setDisable(false);
-//                pressure.setDisable(false);
-//                ambientLight.setDisable(false);
-//                temperature.setSelected(
-//                        WeatherGUI.temperatureGraphs.getData().stream()
-//                                .anyMatch(graph ->
-//                                        sensors.get(Integer.parseInt(graph.getName()))
-//                                                .getLocation().equals(choiceBox.getValue())
-//                                )
-//                );
-//                pressure.setSelected(
-//                        WeatherGUI.pressureGraphs.getData().stream()
-//                                .anyMatch(graph ->
-//                                        sensors.get(Integer.parseInt(graph.getName()))
-//                                                .getLocation().equals(choiceBox.getValue()))
-//                );
-//                ambientLight.setSelected(
-//                        WeatherGUI.ambientLightGraphs.getData().stream()
-//                                .anyMatch(graph ->
-//                                        sensors.get(Integer.parseInt(graph.getName()))
-//                                                .getLocation().equals(choiceBox.getValue()))
-//                );
-//            }
-//        });
-        sensorList.getChildren().addAll(
-                sensors.stream()
+        var sensorCheckBoxes = sensors.stream()
                 .map(sensor -> {
                     var chk = new CheckBox(sensor.getLocation());
-                    chk.resize(120, 45);
-                    chk.setPadding(new Insets(10));
+                    chk.resize(temperature.getWidth(), temperature.getHeight());
+                    chk.setPadding(temperature.getInsets());
                     chk.setOnAction(this::updateChoiceBox);
                     return chk;
                 })
-                .collect(Collectors.toList())
-        );
-//        sensorList.getChildren().forEach(checkBox -> configureCheckBox((CheckBox) checkBox));
+                .collect(Collectors.toList());
+        sensorList.getChildren().addAll(sensorCheckBoxes);
+    }
 
-//        numCheckBoxesSelected.addListener((obs, oldSelectedCount, newSelectedCount) -> {
-//            if (newSelectedCount.intValue() >= maxNumSelected) {
-//                unselectedCheckBoxes.forEach(cb -> cb.setDisable(true));
-//            }
-//            else {
-//                unselectedCheckBoxes.forEach(cb -> cb.setDisable(false));
-//            }
-//        });
+    private SensorBool getSensorBoolWithLocation(String location) {
+        return sensorBools.stream()
+                .filter(sensorBool -> sensorBool.getSensor().getLocation().equals(location))
+                .findAny()
+                .orElse(new SensorBool(new Sensor()));
     }
 
     public void updateChoiceBox(ActionEvent e) {
         var chk = (CheckBox) e.getSource();
-        System.out.println("Action performed on checkbox " + chk.getText());
-        System.out.println("manageChoiceBox");
-        if (!choiceBox.getItems().contains(chk.getText())) {
+        if (!choiceBox.getItems().contains(chk.getText()) && chk.isSelected()) {
             choiceBox.getItems().add(chk.getText());
-            sensorBools.add(new SensorBool(sensors.stream().filter(sensor -> sensor.getLocation().equals(chk.getText())).collect(Collectors.toList()).get(0)));
+            var sensor = sensors.stream()
+                    .filter(sensor1 -> sensor1.getLocation().equals(chk.getText()))
+                    .findAny()
+                    .orElse(new Sensor());
+            sensorBools.add(new SensorBool(sensor));
         } else {
             choiceBox.getItems().remove(chk.getText());
-            sensorBools.remove(new SensorBool(sensors.stream().filter(sensor -> sensor.getLocation().equals(chk.getText())).collect(Collectors.toList()).get(0)));
+            sensorBools.removeIf(sensorBool -> sensorBool.getSensor().getLocation().equals(chk.getText()));
+        }
+    }
+
+    public void updateButtonsFromChoiceBox(ActionEvent e) {
+        if(choiceBox.getValue().equals("all sensors")) {
+            temperature.setSelected(sensorBools.stream().allMatch(SensorBool::isTemperature));
+            pressure.setSelected(sensorBools.stream().allMatch(SensorBool::isPressure));
+            ambientLight.setSelected(sensorBools.stream().allMatch(SensorBool::isAmbientLight));
+        } else {
+            temperature.setSelected(getSensorBoolWithLocation(choiceBox.getValue()).isTemperature());
+            pressure.setSelected(getSensorBoolWithLocation(choiceBox.getValue()).isPressure());
+            ambientLight.setSelected(getSensorBoolWithLocation(choiceBox.getValue()).isAmbientLight());
         }
     }
 
     public void updateTemperatureGraphs(ActionEvent e) {
         var chk = (CheckBox) e.getSource();
-        var sensor = sensors.stream()
-                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-                .collect(Collectors.toList())
-                .get(0)
-                .getId();
-        sensorBools.get(sensor).setTemperature(chk.isSelected());
-//        System.out.println("Action performed on checkbox: " + chk.getText());
-//        if(choiceBox.getValue() != null) {
-//            choiceBox.getItems().forEach(item -> {
-//                if(choiceBox.getValue().matches(item)) {
-//                    System.out.println("Worked for: " + item);
-//                }
-//            });
-//        }
-//        if (choiceBox.getValue().matches(choiceBox.getItems().get(0))) {
-//            System.out.println("Worked for: " + choiceBox.getItems().get(0));
-//        }
-//        else if (choiceBox.getValue().matches(choiceBox.getItems().get(1))) {
-//            System.out.println("Worked for: " + choiceBox.getItems().get(1));
-//        }
-//        else if (choiceBox.getValue().matches(choiceBox.getItems().get(2))) {
-//            System.out.println("Worked for: " + choiceBox.getItems().get(2));
-//        }
+        if(choiceBox.getValue().equals("all sensors")) {
+            sensorBools.forEach(sensorBool -> sensorBool.setTemperature(chk.isSelected()));
+        } else {
+            getSensorBoolWithLocation(choiceBox.getValue()).setTemperature(chk.isSelected());
+        }
     }
 
     public void updatePressureGraphs(ActionEvent e) {
         var chk = (CheckBox) e.getSource();
-        var sensor = sensors.stream()
-                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-                .collect(Collectors.toList())
-                .get(0)
-                .getId();
-        sensorBools.get(sensor).setPressure(chk.isSelected());
+        if(choiceBox.getValue().equals("all sensors")) {
+            sensorBools.forEach(sensorBool -> sensorBool.setPressure(chk.isSelected()));
+        } else {
+            getSensorBoolWithLocation(choiceBox.getValue()).setPressure(chk.isSelected());
+        }
     }
 
     public void updateAmbientLightGraphs(ActionEvent e) {
         var chk = (CheckBox) e.getSource();
-        var sensor = sensors.stream()
-                .filter(sensor1 -> sensor1.getLocation().equals(choiceBox.getValue()))
-                .collect(Collectors.toList())
-                .get(0)
-                .getId();
-        sensorBools.get(sensor).setAmbientLight(chk.isSelected());
+        if(choiceBox.getValue().equals("all sensors")) {
+            sensorBools.forEach(sensorBool -> sensorBool.setAmbientLight(chk.isSelected()));
+        } else {
+            getSensorBoolWithLocation(choiceBox.getValue()).setAmbientLight(chk.isSelected());
+        }
     }
 
-//    public void configureCheckBox(CheckBox checkBox) {
-//        if (checkBox.isSelected()) {
-//            selectedCheckBoxes.add(checkBox);
-//        }
-//        else {
-//            unselectedCheckBoxes.add(checkBox);
-//        }
-//
-//        checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
-//            if (isNowSelected) {
-//                unselectedCheckBoxes.remove(checkBox);
-//                selectedCheckBoxes.add(checkBox);
-//            }
-//            else {
-//                selectedCheckBoxes.remove(checkBox);
-//                unselectedCheckBoxes.add(checkBox);
-//            }
-//        });
-//    }
-
-    public void updateSensorLists(ActionEvent e) {
-//        temperatureSensors = WeatherGUI.temperatureGraphs.getData().stream()
-//                .map(graph ->
-//                        sensors.stream()
-//                                .filter(sensor -> sensor.getLocation().equals(graph.getName()))
-//                                .collect(Collectors.toList())
-//                                .get(0)
-//                                .getId()
-//                )
-//                .collect(Collectors.toList());
-//        pressureSensors = WeatherGUI.pressureGraphs.getData().stream()
-//                .map(graph ->
-//                        sensors.stream()
-//                                .filter(sensor -> sensor.getLocation().equals(graph.getName()))
-//                                .collect(Collectors.toList())
-//                                .get(0)
-//                                .getId()
-//                )
-//                .collect(Collectors.toList());
-//        ambientLightSensors = WeatherGUI.ambientLightGraphs.getData().stream()
-//                .map(graph ->
-//                        sensors.stream()
-//                                .filter(sensor -> sensor.getLocation().equals(graph.getName()))
-//                                .collect(Collectors.toList())
-//                                .get(0)
-//                                .getId()
-//                )
-//                .collect(Collectors.toList());
+    public void updateSensorBools(ActionEvent e) {
         User.setSensorBools(sensorBools);
         ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
     }
 
     public void returnBack(ActionEvent e) {
-//        WeatherGUI.temperatureGraphs.getData().removeIf(graph ->
-//            !temperatureSensors.contains(Integer.valueOf(graph.getName()))
-//        );
-//        WeatherGUI.pressureGraphs.getData().removeIf(graph ->
-//            !pressureSensors.contains(Integer.valueOf(graph.getName()))
-//        );
-//        WeatherGUI.ambientLightGraphs.getData().removeIf(graph ->
-//            !ambientLightSensors.contains(Integer.valueOf(graph.getName()))
-//        );
         ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
     }
-
-
-
 }

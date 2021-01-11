@@ -2,6 +2,7 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,32 +16,32 @@ import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+import java.time.temporal.TemporalAmount;
+import java.util.*;
 
 public class WeatherGUI {
     @FXML
     private LineChart<String, Number> temperatureGraphs;
+
     @FXML
     private LineChart<String, Number> pressureGraphs;
+
     @FXML
     private LineChart<String, Number> ambientLightGraphs;
 
-    private List<Sensor> sensors;
-    private List<Reading> readings;
+    @FXML
+    private DatePicker dateFrom;
 
-    private ObservableList<LocalTime> listFrom = FXCollections.observableArrayList ();
-    private ObservableList<LocalTime> listTo = FXCollections.observableArrayList ();
+    @FXML
+    private DatePicker dateTo;
+
+    @FXML
+    private ComboBox<LocalTime> timeFrom;
+
+    @FXML
+    private ComboBox<LocalTime> timeTo;
 
     public void initialize() {
         //initialize the start and finish date - future date inhibited
@@ -60,90 +61,108 @@ public class WeatherGUI {
                 setDisable ( empty || date.compareTo ( today ) > 0 );
             }
         } );
-        dateTo.setValue ( LocalDate.now () );
-        dateFrom.setValue ( LocalDate.now () );
+        dateTo.setValue(LocalDate.now());
+        dateFrom.setValue(LocalDate.now());
 
-        for (int i = 0; i < 24; i++) {
-            for (int j = 0; j <= 55; j += 5) {
-                String th = String.format ( "%02d", i ) + ":" + String.format ( "%02d", j ) + ":" + String.format ( "%02d", 0 );
-                listFrom.add ( LocalTime.parse ( th ) );
-                listTo.add ( LocalTime.parse ( th ) );
+        for (var i = 0; i < 24; ++i) {
+            for (var j = 0; j < 60; j += 5) {
+                timeFrom.getItems().add(LocalTime.of(i, j));
+                timeTo.getItems().add(LocalTime.of(i, j));
             }
         }
-        timeFrom.setItems ( listFrom );
-        timeFrom.setValue ( listFrom.get ( 0 ) );
-        timeTo.setItems ( listTo );
-        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern ( "HH:mm" );
-        String th = LocalTime.now ().format ( myFormatTime );
-        timeTo.setValue ( LocalTime.parse ( th ) );
+        timeFrom.setValue(LocalTime.MIDNIGHT);
+        timeTo.setValue(LocalTime.MIDNIGHT);
     }
 
-    public void updateGraphs() {
-        sensors.stream()
-                .map(Sensor::getId)
-                .forEach(id -> {
-                    addTemperatureGraph(id);
-                    addPressureGraph(id);
-                    addAmbientLightGraph(id);
-                });
-        User.getSensorBools().forEach(System.out::println);
+    public void updateGraphs(ActionEvent e) {
+        var dtFrom = dateFrom.getValue().atTime(timeFrom.getValue());
+        var dtTo = dateTo.getValue().atTime(timeTo.getValue());
+        if(dtFrom.isEqual(dtTo) || dtFrom.isAfter(dtTo)) {
+            try {
+                errorMsg();
+                return;
+            } catch(IOException iox) {
+                iox.printStackTrace();
+            }
+        }
+        temperatureGraphs.getData().clear();
+        pressureGraphs.getData().clear();
+        ambientLightGraphs.getData().clear();
+        User.getSensorBools().forEach(sensorBool -> {
+            var id = sensorBool.getSensor().getId();
+            if(sensorBool.isTemperature()) addTemperatureGraph(id);
+            else removeTemperatureGraph(id);
+            if(sensorBool.isPressure()) addPressureGraph(id);
+            else removePressureGraph(id);
+            if(sensorBool.isAmbientLight()) addAmbientLightGraph(id);
+            else removeAmbientLightGraph(id);
+        });
     }
 
     private String getSensorNameFromId(int id) {
-        return sensors.stream()
+        return User.getSensorBools().stream()
+                .map(SensorBool::getSensor)
                 .filter(sensor -> sensor.getId() == id)
                 .map(Sensor::getLocation)
                 .findAny()
                 .orElse("");
     }
 
+    private int getSensorIdFromName(String location) {
+        return User.getSensorBools().stream()
+                .map(SensorBool::getSensor)
+                .filter(sensor -> sensor.getLocation().equals(location))
+                .map(Sensor::getId)
+                .findAny()
+                .orElse(0);
+    }
+
     public void addTemperatureGraph(int sensor) {
-        var graph = new XYChart.Series<String, Number>();
-        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
-        graph.setName(getSensorNameFromId(sensor));
-        readings.stream()
-                .filter(reading -> reading.getSensor_id() == sensor)
+        ObservableList<XYChart.Data<String, Number>> oList = FXCollections.observableArrayList();
+        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
+        var dtFrom = dateFrom.getValue().atTime(timeFrom.getValue());
+        var dtTo = dateTo.getValue().atTime(timeTo.getValue());
+        Parser.getTemperatures(dtFrom, dtTo, sensor).stream()
                 .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getTemperature()))
-                .forEach(reading -> graph.getData().add(reading));
-        temperatureGraphs.getData().add(graph);
+                .forEach(oList::add);
+        var sList = new SortedList<>(oList, Comparator.comparing(o -> LocalDateTime.parse(o.getXValue(), format)));
+        temperatureGraphs.getData().add(new XYChart.Series<>(getSensorNameFromId(sensor), sList));
     }
 
     public void addPressureGraph(int sensor) {
-        var graph = new XYChart.Series<String, Number>();
-        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
-        graph.setName(getSensorNameFromId(sensor));
-        readings.stream()
-                .filter(reading -> reading.getSensor_id() == sensor)
-                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getA_pressure()))
-                .forEach(reading -> graph.getData().add(reading));
-        pressureGraphs.getData().add(graph);
+        ObservableList<XYChart.Data<String, Number>> oList = FXCollections.observableArrayList();
+        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
+        var dtFrom = dateFrom.getValue().atTime(timeFrom.getValue());
+        var dtTo = dateTo.getValue().atTime(timeTo.getValue());
+        Parser.getPressures(dtFrom, dtTo, sensor).stream()
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getB_pressure()))
+                .forEach(oList::add);
+        var sList = new SortedList<>(oList, Comparator.comparing(o -> LocalDateTime.parse(o.getXValue(), format)));
+        pressureGraphs.getData().add(new XYChart.Series<>(getSensorNameFromId(sensor), sList));
     }
 
     public void addAmbientLightGraph(int sensor) {
-        var graph = new XYChart.Series<String, Number>();
-        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
-        graph.setName(getSensorNameFromId(sensor));
-        readings.stream()
-                .filter(reading -> reading.getSensor_id() == sensor)
+        ObservableList<XYChart.Data<String, Number>> oList = FXCollections.observableArrayList();
+        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
+        var dtFrom = dateFrom.getValue().atTime(timeFrom.getValue());
+        var dtTo = dateTo.getValue().atTime(timeTo.getValue());
+        Parser.getAmbientLights(dtFrom, dtTo, sensor).stream()
                 .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getAmbient_light()))
-                .forEach(reading -> graph.getData().add(reading));
-        ambientLightGraphs.getData().add(graph);
+                .forEach(oList::add);
+        var sList = new SortedList<>(oList, Comparator.comparing(o -> LocalDateTime.parse(o.getXValue(), format)));
+        ambientLightGraphs.getData().add(new XYChart.Series<>(getSensorNameFromId(sensor), sList));
     }
 
-//    public void removeTemperatureGraph(int sensor) {
-//        var graph = temperatureGraphs.getData().stream()
-//                .filter(graph -> graph.getName().equals(
-//                        sensors.stream()
-//                ))
-//        temperatureGraphs.getData().remove(graph);
-//    }
+    public void removeTemperatureGraph(int sensor) {
+        temperatureGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
+    }
 
     public void removePressureGraph(int sensor) {
-        pressureGraphs.getData().removeIf(graph -> graph.getName().equals(String.valueOf(sensor)));
+        pressureGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
     }
 
     public void removeAmbientLightGraph(int sensor) {
-        ambientLightGraphs.getData().removeIf(graph -> graph.getName().equals(String.valueOf(sensor)));
+        ambientLightGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
     }
 
     //show exit window
@@ -158,7 +177,10 @@ public class WeatherGUI {
     }
     //show average window
     public void openAvg() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ( "average.fxml" ));
+        var from = dateFrom.getValue().atTime(timeFrom.getValue());
+        var to = dateTo.getValue().atTime(timeTo.getValue());
+        User.setTimeFrame(from, to);
+        FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ("averageTable.fxml"));
         Parent root1 = fxmlLoader.load ();
         Stage stage = new Stage ();
         stage.setResizable(false);
@@ -177,83 +199,31 @@ public class WeatherGUI {
         stage.show ();
     }
 
-    //function lastH
-    @FXML//fx:id="lastH"
+    private void setLastX(TemporalAmount amount) {
+        var now = LocalDateTime.now();
+        dateTo.setValue(now.toLocalDate());
+        timeTo.setValue(LocalTime.of(now.getHour(), now.getMinute()));
+        var nowMinusX = now.minus(amount);
+        dateFrom.setValue(nowMinusX.toLocalDate());
+        timeFrom.setValue(LocalTime.of(nowMinusX.getHour(), nowMinusX.getMinute()));
+    }
+
     public void setLastH() {
-        setLastTime ();
-        timeFrom.setValue ( (timeTo.getValue ().minusHours ( 1 )) );
-        dateFrom.setValue ( LocalDate.now () );
+        setLastX(Duration.ofHours(1));
     }
 
-    //function lastD
-    @FXML//fx:id="lastD"
     public void setLastD() {
-        setLastTime ();
-        dateFrom.setValue ( LocalDate.now ().minusDays ( 1 ) );
+        setLastX(Period.ofDays(1));
     }
 
-    //function lastW
-    @FXML//fx:id="lastW"
     public void setLastW() {
-        setLastTime ();
-        dateFrom.setValue ( LocalDate.now ().minusDays ( 7 ) );
+        setLastX(Period.ofWeeks(1));
     }
 
-    //function lastM
-    @FXML//fx:id="lastM"
     public void setLastM() {
-        setLastTime ();
-        dateFrom.setValue ( LocalDate.now ().minusDays ( 30 ) );
-
+        setLastX(Period.ofMonths(1));
     }
 
-    // function to set the last time requested - only common instructions
-    private void setLastTime() {
-        LocalTime t = LocalTime.now ();
-        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern ( "HH:mm" );
-        String th = t.format ( myFormatTime );
-        timeTo.setValue ( LocalTime.parse ( th ) );
-        timeFrom.setValue ( timeTo.getValue () );
-        dateTo.setValue ( LocalDate.now () );
-    }
-
-
-    @FXML//fx:id="timeFrom"
-    private ComboBox<LocalTime> timeFrom;
-
-    @FXML//fx:id="timeTo"
-    private ComboBox<LocalTime> timeTo;
-
-    @FXML//fx:id="dateFrom"
-    private DatePicker dateFrom;
-
-    @FXML//fx:id="dateTo"
-    private DatePicker dateTo;
-
-    //function to get the time interval for sensor data extraction
-    public void setTimeInterval() throws ParseException, IOException {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "yyyy-MM-dd HH:mm" );
-
-        LocalDateTime begin, end;
-        begin = LocalDateTime.parse ( dateFrom.getValue () + " " + timeFrom.getValue (), formatter );
-        end = LocalDateTime.parse ( dateTo.getValue () + " " + timeTo.getValue (), formatter );
-
-        if (end.isBefore (LocalDateTime.now ()) && begin.isBefore ( end.minusMinutes ( 5 ) ) ){
-            //print check - to be cut after implementation
-
-            for (String s : Arrays.asList ( "The time interval for graphical representation is:\n",
-                    "Start Date:" + begin + "\n",
-                    "Finish Date:" + end + "\n" )) {
-                System.out.println ( s );
-            }
-            //todo insert function to get the right time parameters
-            //Parser.getReadings(LocalDateTime begin, LocalDateTime end);
-        } else {
-            //show error message for time/date correction
-            errorMsg ();
-        }
-    }
-    //show credentials window
     public void shCredentials() throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "Credentials.fxml" ) );
         Parent root2 = fxmlLoader.load ();
@@ -261,19 +231,6 @@ public class WeatherGUI {
         stage.setTitle ( "CREDENTIALS" );
         stage.setScene ( new Scene ( root2 ) );
         stage.show ();
-    }
-    //function to be used ONLY for automate setting the time if timeTo or timeFrom is above the current time now()
-    private String resetTime(LocalDateTime reset) {
-        LocalTime t = LocalTime.now ();
-        DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern ( "HH:mm" );
-        String th = t.format ( myFormatTime );
-        if (String.valueOf ( reset ).equals ( "begin" )) {
-            timeFrom.setValue ( LocalTime.parse ( th ).minusMinutes ( 10 ) );
-            return dateFrom.getValue () + " " + timeFrom.getValue ();
-        } else {
-            timeTo.setValue ( LocalTime.parse ( th ) );
-            return dateTo.getValue () + " " + timeTo.getValue ();
-        }
     }
 
     public void openConfig(ActionEvent actionEvent) throws IOException {
