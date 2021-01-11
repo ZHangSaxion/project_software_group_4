@@ -120,17 +120,17 @@ public class APIController {
      */
     @GetMapping(path = "/readings")
     @ResponseBody
-    public String getReadings(@RequestParam int req_type, int id, String key) {
+    public String getReadings(@RequestParam int req_type, int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             switch (req_type) {
                 case 0:
-                    return getReadingsBySensor(id, key);
+                    return getReadingsBySensor(day_from, day_to, id, key);
                 case 1:
-                    return getReadingsBySensorForAmbient(id, key);
+                    return getReadingsBySensorForAmbient(day_from, day_to, id, key);
                 case 2:
-                    return getReadingsBySensorForTemperature(id, key);
+                    return getReadingsBySensorForTemperature(day_from, day_to, id, key);
                 case 3:
-                    return getReadingsBySensorForPressure(id, key);
+                    return getReadingsBySensorForPressure(day_from, day_to, id, key);
                 default:
                     return "Wrong requirement type id. Please use an integer from 0 to 3.";
             }
@@ -145,17 +145,23 @@ public class APIController {
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
-    public String getReadingsBySensor(int id, String key) {
+    public String getReadingsBySensor(int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             if (id == -1) {
-                return getAllReadings();
+                return getAllReadings(day_from, day_to - day_from);
             } else {
                 StringBuffer result = new StringBuffer();
-                result.append(headerForGetReadingsById(id));
+                result.append("{\n");
+                result.append("\"list\":[\n");
+
+                var dateFrom = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_from);
+                var dateTo = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_to);
 
                 var readings = readingsRepository.findAll();
                 for (Readings r : readings) {
-                    if (r.getSensor_id() == id) {
+                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
                         result.append(fullInfoOfAReading(r));
                     }
                 }
@@ -174,7 +180,7 @@ public class APIController {
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
-    public String getReadingsBySensorForAmbient(int id, String key) {
+    public String getReadingsBySensorForAmbient(int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             if (id == -1) {
                 return getAllReadingsAmbient();
@@ -182,9 +188,14 @@ public class APIController {
                 StringBuffer result = new StringBuffer();
                 result.append(headerForGetReadingsById(id));
 
+                var dateFrom = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_from);
+                var dateTo = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_to);
+
                 var readings = readingsRepository.findAll();
                 for (Readings r : readings) {
-                    if (r.getSensor_id() == id) {
+                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
                         result.append(ambientLightoOfAReading(r));
                     }
                 }
@@ -203,7 +214,7 @@ public class APIController {
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
-    public String getReadingsBySensorForTemperature(int id, String key) {
+    public String getReadingsBySensorForTemperature(int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             if (id == -1) {
                 return getAllReadingsTemperature();
@@ -211,9 +222,14 @@ public class APIController {
                 StringBuffer result = new StringBuffer();
                 result.append(headerForGetReadingsById(id));
 
+                var dateFrom = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_from);
+                var dateTo = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_to);
+
                 var readings = readingsRepository.findAll();
                 for (Readings r : readings) {
-                    if (r.getSensor_id() == id) {
+                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
                         result.append(temperatureOfAReading(r));
                     }
                 }
@@ -232,45 +248,10 @@ public class APIController {
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
-    public String getReadingsBySensorForPressure(int id, String key) {
+    public String getReadingsBySensorForPressure(int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             if (id == -1) {
                 return getAllReadingsPressure();
-            } else {
-                StringBuffer result = new StringBuffer();
-                result.append(headerForGetReadingsById(id));
-
-                var readings = readingsRepository.findAll();
-                for (Readings r : readings) {
-                    if (r.getSensor_id() == id) {
-                        result.append(pressureOfAReading(r));
-                    }
-                }
-                result.deleteCharAt(result.length() - 1);
-                result.append("\n]\n}");
-                return result.toString();
-            }
-        } else
-            return "invalid key";
-    }
-
-    /**
-     * List all of the information of the newest records
-     * saved in the table "reading" in the database for a specific sensor
-     * limited by date.
-     *
-     * @param day_from number of days between the beginning date till today.
-     * @param day_to number of days between the ending date till today.
-     * @param id  The id number of the sensor which is selected by user, -1 means all sensors.
-     * @param key This is get from the path value to verify whether the user has permission to require information.
-     * @return String This returns a string listing required information in json style when the requirement is valid.
-     */
-    @GetMapping(path = "/recent")
-    @ResponseBody
-    public String getReadingsByDays(@RequestParam int day_from, int day_to, int id, String key) {
-        if (key.equals(auth_code)) {
-            if (id == -1) {
-                return getReadingsByDayForAllSensors(day_from, day_to - day_from, key);
             } else {
                 StringBuffer result = new StringBuffer();
                 result.append(headerForGetReadingsById(id));
@@ -283,15 +264,15 @@ public class APIController {
                 var readings = readingsRepository.findAll();
                 for (Readings r : readings) {
                     if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
-                        result.append(fullInfoOfAReading(r));
+                        result.append(pressureOfAReading(r));
                     }
                 }
                 result.deleteCharAt(result.length() - 1);
                 result.append("\n]\n}");
                 return result.toString();
             }
-        }
-        return "invalid key";
+        } else
+            return "invalid key";
     }
 
     /**
@@ -299,9 +280,9 @@ public class APIController {
      * limited by date.
      *
      * @param day_from number of days between the beginning date till today.
-     * @param day_to number of days between the ending date till today.
-     * @param id  The id number of the sensor which is selected by user, -1 means all sensors.
-     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @param day_to   number of days between the ending date till today.
+     * @param id       The id number of the sensor which is selected by user, -1 means all sensors.
+     * @param key      This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
     @GetMapping(path = "/average")
@@ -348,7 +329,7 @@ public class APIController {
      * limited by date.
      *
      * @param day_from number of days between the beginning date till today.
-     * @param day_to number of days between the ending date till today.
+     * @param day_to   number of days between the ending date till today.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
     public String getAllAverage(@RequestParam int day_from, int day_to) {
@@ -393,46 +374,6 @@ public class APIController {
     }
 
     /**
-     * List all of the information of the newest records
-     * saved in the table "reading" in the database for all sensor
-     * limited by date.
-     *
-     * @param day_from number of days between the beginning date till today.
-     * @param length number of days between the beginnging date and the ending date.
-     * @param key This is get from the path value to verify whether the user has permission to require information.
-     * @return String This returns a string listing required information in json style when the requirement is valid.
-     */
-    public String getReadingsByDayForAllSensors(int day_from, int length, String key) {
-        if (key.equals(auth_code)) {
-            StringBuffer result = new StringBuffer();
-            result.append("{\n");
-
-            var allSensor = new HashMap<Integer, String>();
-            sensorsRepository.findAll().forEach(s -> {
-                allSensor.put(s.getId(), s.getLocation());
-            });
-            result.append("\"list\":[\n");
-
-            var day = Calendar.getInstance();
-            day.add(Calendar.DATE, -day_from);
-
-            for (int id : allSensor.keySet()) {
-                for (int d = 0; d < length; d++) {
-                    day.add(Calendar.DATE, -day_from + d);
-                    result.append(getReadingsByDays(day_from, length, id, key));
-                    result.append(",\n");
-                }
-
-            }
-            result.deleteCharAt(result.length() - 1);
-            result.append("]\n}");
-            return result.toString();
-        } else
-            return "invalid key";
-    }
-
-
-    /**
      * Create a head in json style for required information of one specific sensor.
      *
      * @param id The id number of the sensor which is selected by user.
@@ -462,6 +403,7 @@ public class APIController {
     private String fullInfoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
+        result.append("\"sensor_id\": \"" + r.getSensor_id() + "\",\n");
         result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + ",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
@@ -479,6 +421,7 @@ public class APIController {
     private String temperatureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
+        result.append("\"sensor_id\": \"" + r.getSensor_id() + "\",\n");
         result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + "\n");
         result.append("},");
@@ -494,6 +437,7 @@ public class APIController {
     private String ambientLightoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
+        result.append("\"sensor_id\": \"" + r.getSensor_id() + "\",\n");
         result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + "\n");
         result.append("},");
@@ -509,6 +453,7 @@ public class APIController {
     private String pressureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
+        result.append("\"sensor_id\": \"" + r.getSensor_id() + "\",\n");
         result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
         result.append("},");
@@ -521,8 +466,31 @@ public class APIController {
      *
      * @return String The list of readings' information. The output will automatically in json style.
      */
-    public String getAllReadings() {
-        return readingsRepository.findAll().toString();
+    public String getAllReadings(int day_from, int day_to) {
+        StringBuffer result = new StringBuffer();
+        result.append("{\n");
+        var allR = readingsRepository.findAll();
+
+        var dateFrom = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE, -day_from);
+        var dateTo = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE, -day_to);
+
+        for(Readings r: allR){
+            if(r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())){
+                result.append("{\n");
+                result.append("\"sensor_id\": \"" + r.getSensor_id() + "\",\n");
+                result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
+                result.append("\"temperature\": " + r.getTemperature() + ",\n");
+                result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
+                result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
+                result.append("},");
+            }
+
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append("{\n");
+        return result.toString();
     }
 
 
