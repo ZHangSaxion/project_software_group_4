@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 /**
  * An entity class to set the springboot server communicating with database table "readings" in correct way.
@@ -15,6 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "readings")
 public class Readings {
+    private final SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     @Id
     @Column(name = "reading_id")
     private int id;
@@ -148,12 +150,11 @@ public class Readings {
      */
     @Override
     public String toString() {
-        return "Readings{" +
-                ", \"sensor_id\" = " + sensor_id +
+        return "{\"sensor_id\" = " + sensor_id +
                 ", \"b_pressure\" = " + pressure +
                 ", \"ambient_light\" = " + ambient_light +
                 ", \"temperature\" = " + temperature +
-                ", \"date\" = " + date +
+                ", \"date\" = " + date.getTime() +
                 '}';
     }
 }

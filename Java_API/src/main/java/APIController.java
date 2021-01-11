@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -31,6 +29,7 @@ public class APIController {
     private ReadingsRepository readingsRepository;
 
     private final String auth_code = "saxion_group_4";
+    private final SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     /**
      * List all the information saved in the table "sensor" in the database.
@@ -98,7 +97,7 @@ public class APIController {
                 }
                 result.append("{\n");
                 result.append("\"location\": \"" + location + "\",\n");
-                result.append("\"time\": \"" + newestReading.getDate().getTime() + "\",\n");
+                result.append("\"date\": \"" + ft.format(newestReading.getDate()) + "\",\n");
                 result.append("\"temperature\": " + newestReading.getTemperature() + ",\n");
                 result.append("\"ambient_light\": " + newestReading.getAmbient_light() + ",\n");
                 result.append("\"b_pressure\": " + newestReading.getA_pressure() + "\n");
@@ -260,27 +259,30 @@ public class APIController {
      * saved in the table "reading" in the database for a specific sensor
      * limited by date.
      *
-     * @param day number of days which is selected by user.
+     * @param day_from number of days between the beginning date till today.
+     * @param day_to number of days between the ending date till today.
      * @param id  The id number of the sensor which is selected by user, -1 means all sensors.
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
     @GetMapping(path = "/recent")
     @ResponseBody
-    public String getReadingsByDays(@RequestParam int day, int id, String key) {
+    public String getReadingsByDays(@RequestParam int day_from, int day_to, int id, String key) {
         if (key.equals(auth_code)) {
             if (id == -1) {
-                return getReadingsByDayForAllSensors(day, key);
+                return getReadingsByDayForAllSensors(day_from, day_to - day_from, key);
             } else {
                 StringBuffer result = new StringBuffer();
                 result.append(headerForGetReadingsById(id));
 
                 var dateFrom = Calendar.getInstance();
-                dateFrom.add(Calendar.DATE, -day);
+                dateFrom.add(Calendar.DATE, -day_from);
+                var dateTo = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_to);
 
                 var readings = readingsRepository.findAll();
                 for (Readings r : readings) {
-                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime())) {
+                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
                         result.append(fullInfoOfAReading(r));
                     }
                 }
@@ -293,15 +295,114 @@ public class APIController {
     }
 
     /**
+     * List all kinds of the averages for each column saved in the table "reading" in the database
+     * limited by date.
+     *
+     * @param day_from number of days between the beginning date till today.
+     * @param day_to number of days between the ending date till today.
+     * @param id  The id number of the sensor which is selected by user, -1 means all sensors.
+     * @param key This is get from the path value to verify whether the user has permission to require information.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
+    @GetMapping(path = "/average")
+    @ResponseBody
+    public String getAverage(@RequestParam int day_from, int day_to, int id, String key) {
+        if (key.equals(auth_code)) {
+            if (id == -1) {
+                return getAllAverage(day_from, day_to);
+            } else {
+                StringBuffer result = new StringBuffer();
+                result.append("[");
+
+                var dateFrom = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_from);
+                var dateTo = Calendar.getInstance();
+                dateFrom.add(Calendar.DATE, -day_to);
+
+                var readings = readingsRepository.findAll();
+                double sum_temperature = 0;
+                double sum_ambient = 0;
+                double sum_pressure = 0;
+                int count = 0;
+                for (Readings r : readings) {
+                    if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
+                        sum_ambient += r.getAmbient_light();
+                        sum_temperature += r.getTemperature();
+                        sum_pressure += r.getA_pressure();
+                        count++;
+                    }
+                }
+                result.append("{\"sensor_id\": " + id + ", \"ambient_light\": " + sum_ambient / count + ", "
+                        + "\"temperature\": " + sum_temperature / count + ", "
+                        + "\"b_pressure\": " + sum_pressure / count
+                        + "}");
+                result.append("\n]");
+                return result.toString();
+            }
+        }
+        return "invalid key";
+    }
+
+    /**
+     * List all kinds of the averages for each column saved in the table "reading" in the database
+     * limited by date.
+     *
+     * @param day_from number of days between the beginning date till today.
+     * @param day_to number of days between the ending date till today.
+     * @return String This returns a string listing required information in json style when the requirement is valid.
+     */
+    public String getAllAverage(@RequestParam int day_from, int day_to) {
+
+        StringBuffer result = new StringBuffer();
+        result.append("[");
+
+        var dateFrom = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE, -day_from);
+        var dateTo = Calendar.getInstance();
+        dateFrom.add(Calendar.DATE, -day_to);
+
+        var readings = readingsRepository.findAll();
+
+        Set<Integer> ids = new HashSet<Integer>();
+        for (Readings r : readings) {
+            ids.add(r.getSensor_id());
+        }
+
+        for (int id : ids) {
+            double sum_temperature = 0;
+            double sum_ambient = 0;
+            double sum_pressure = 0;
+            int count = 0;
+            for (Readings r : readings) {
+                if (r.getSensor_id() == id && r.getDate().after(dateFrom.getTime()) && r.getDate().before(dateTo.getTime())) {
+                    sum_ambient += r.getAmbient_light();
+                    sum_temperature += r.getTemperature();
+                    sum_pressure += r.getA_pressure();
+                    count++;
+                }
+            }
+            result.append("{\"sensor_id\": " + id + ", \"ambient_light\": " + sum_ambient / count + ", "
+                    + "\"temperature\": " + sum_temperature / count + ", "
+                    + "\"b_pressure\": " + sum_pressure / count
+                    + "},");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append("\n]");
+        return result.toString();
+
+    }
+
+    /**
      * List all of the information of the newest records
      * saved in the table "reading" in the database for all sensor
      * limited by date.
      *
-     * @param day number of days which is selected by user.
+     * @param day_from number of days between the beginning date till today.
+     * @param length number of days between the beginnging date and the ending date.
      * @param key This is get from the path value to verify whether the user has permission to require information.
      * @return String This returns a string listing required information in json style when the requirement is valid.
      */
-    public String getReadingsByDayForAllSensors(int day, String key) {
+    public String getReadingsByDayForAllSensors(int day_from, int length, String key) {
         if (key.equals(auth_code)) {
             StringBuffer result = new StringBuffer();
             result.append("{\n");
@@ -312,9 +413,16 @@ public class APIController {
             });
             result.append("\"list\":[\n");
 
+            var day = Calendar.getInstance();
+            day.add(Calendar.DATE, -day_from);
+
             for (int id : allSensor.keySet()) {
-                result.append(getReadingsByDays(day, id, key));
-                result.append(",\n");
+                for (int d = 0; d < length; d++) {
+                    day.add(Calendar.DATE, -day_from + d);
+                    result.append(getReadingsByDays(day_from, length, id, key));
+                    result.append(",\n");
+                }
+
             }
             result.deleteCharAt(result.length() - 1);
             result.append("]\n}");
@@ -354,7 +462,7 @@ public class APIController {
     private String fullInfoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
+        result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + ",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + ",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
@@ -371,7 +479,7 @@ public class APIController {
     private String temperatureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
+        result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"temperature\": " + r.getTemperature() + "\n");
         result.append("},");
         return result.toString();
@@ -386,7 +494,7 @@ public class APIController {
     private String ambientLightoOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
+        result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"ambient_light\": " + r.getAmbient_light() + "\n");
         result.append("},");
         return result.toString();
@@ -401,7 +509,7 @@ public class APIController {
     private String pressureOfAReading(Readings r) {
         StringBuffer result = new StringBuffer();
         result.append("{\n");
-        result.append("\"time\": \"" + r.getDate().getTime() + "\",\n");
+        result.append("\"date\": \"" + ft.format(r.getDate()) + "\",\n");
         result.append("\"b_pressure\": " + r.getA_pressure() + "\n");
         result.append("},");
         return result.toString();

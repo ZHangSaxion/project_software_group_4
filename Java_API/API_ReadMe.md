@@ -30,10 +30,10 @@ The **req_type** can be the following:
 2 for temperature only,  
 3 for pressure only 
 
-And the "id" can be:
+And the **id** can be:
  > -1 for all sensors  
  an integer of a specific sensor id
- 
+  
 **For example**:
 > https://wsgroup4.herokuapp.com/weather_station_java_api/readings?req_type=0&id=-1&key=saxion_group_4
  
@@ -126,54 +126,54 @@ The information will looks like this:
   
 ### 3. Get recently records
 This function will list the newest records of readings in database with their full details for required sensor.  
-It is using the path with parameter  **\<day\>**, **\<id\>**, and **\<key\>**:  
-``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent?day=<day>&id=<id>&key=<key> ```  
+It is using the path with parameter  **\<day_from\>**, **\<day_to\>**, **\<id\>**, and **\<key\>**:  
+``` https://wsgroup4.herokuapp.com/weather_station_java_api/recent?day_from=<day_from>&day_to=<day_to>&id=<id>&key=<key> ```  
+The **day_from** is:  
+> an integer of the number of days between the beginning date and today  
 
+The **day_to** is:  
+> an integer of the number of days between the last date and today
+
+And the **id** can be:
+ > -1 for all sensors  
+ an integer of a specific sensor id
+  
 **For example**:
-> https://wsgroup4.herokuapp.com/weather_station_java_api/recent?day=30&id=-1&key=saxion_group_4
+> https://wsgroup4.herokuapp.com/weather_station_java_api/recent?day_from=30&day_to=25&id=-1&key=saxion_group_4
  
 The information will looks like this:  
 ``` 
-{ 
-    "time_requested":"Thu Jan 07 12:31:05 UTC 2021", 
-    "list": 
+{ "list":
     [ 
         { 
-        "location": "pywierden", 
-        "time": "2020-12-22 08:17:19", 
-        "temperature": 20.4, 
-        "ambient_light": 3.0, 
-        "b_pressure": 987.0 
+        "sensor":"pywierden", 
+        "list": 
+        [ 
+            { 
+            "date": "2020-12-22 08:17:19", 
+            "temperature": 20.4, 
+            "ambient_light": 3.0, 
+            "b_pressure": 987.0 
+            }
+        ]
         },
-        
         { 
-        "location": "pygarage", 
-        "time": "2020-12-22 08:17:19", 
-        "temperature": 12.8, 
-        "ambient_light": 0.0, 
-        "b_pressure": 984.5 
-        },
-        
-        { 
-        "location": "pygronau", 
-        "time": "2020-12-22 08:17:19", 
-        "temperature": -3.3, 
-        "ambient_light": 0.0, 
-        "b_pressure": 983.0 
-        },
-        
-        { "location": "pysaxion", 
-        "time": "2020-12-22 08:17:19", 
-        "temperature": 22.1, 
-        "ambient_light": 0.0, 
-        "b_pressure": 982.5 
-        } 
-    ] 
+        "sensor":"pygarage", 
+        "list": 
+        [ 
+            { 
+            "date": "2020-12-22 08:17:19", 
+            "temperature": 12.8, 
+            "ambient_light": 0.0, 
+            "b_pressure": 984.5 
+            }
+        ]
+    ]
 }
 ```  
   
 **For example**: 
-> http://wsgroup4.herokuapp.com/weather_station_java_api/recent?day=30&id=1&key=saxion_group_4 
+> http://wsgroup4.herokuapp.com/weather_station_java_api/recent?day_from=30&day_to=25&id=1&key=saxion_group_4 
   
 The information will looks like this:  
 ``` 
@@ -181,14 +181,13 @@ The information will looks like this:
 "sensor":"pywierden", 
 "list": 
     [ 
-        { 
-        "time": "2020-12-22 08:17:19", 
+        { "date": "2020-12-22 08:17:19", 
         "temperature": 20.4, 
         "ambient_light": 3.0, 
         "b_pressure": 987.0 
         }
     ]
- }
+}
 ```  
   
 ---  
@@ -277,4 +276,67 @@ The information will looks like this:
     ] 
 }
 ```  
+    
+---  
   
+### 6. Get averages readings
+This function will list the newsst records of readings in database with their full details for each sensor.  
+It is using the path with parameter  **\<day_from\>**, **\<day_to\>**, **\<id\>**, and **\<key\>**:   
+``` https://wsgroup4.herokuapp.com/weather_station_java_api/average?day_from=<day_from>&day_to=<day_to>&id=<id>key=<key> ```  
+The **day_from** is:  
+> an integer of the number of days between the beginning date and today  
+
+The **day_to** is:  
+> an integer of the number of days between the last date and today
+
+And the **id** can be:
+ > -1 for all sensors  
+ an integer of a specific sensor id
+  
+For example:
+> https://wsgroup4.herokuapp.com/weather_station_java_api/average?day_from=30&day_to=25&id=-1&key=saxion_group_4
+ 
+The information will looks like this:  
+``` 
+[
+    {
+    "sensor_id": 1, 
+    "ambient_light": 44.75905118601748, 
+    "temperature": 18.330836454431964, 
+    "b_pressure": 1016.5539950062422
+    },
+    {
+    "sensor_id": 2, 
+    "ambient_light": 8.950700570835496, 
+    "temperature": 5.3892579138557375, 
+    "b_pressure": 1015.4815775817333
+    },
+    {
+    "sensor_id": 3, "
+    ambient_light": 6.57034632034632, 
+    "temperature": -3.2022727272727343, 
+    "b_pressure": 1012.881764069264
+    },
+    {"sensor_id": 4, 
+    "ambient_light": 43.081740976645435, 
+    "temperature": 23.772452229299283, 
+    "b_pressure": 1013.1066878980891
+    } 
+]
+```  
+   
+For example:
+> https://wsgroup4.herokuapp.com/weather_station_java_api/average?day_from=30&day_to=25&id=1&key=saxion_group_4
+ 
+The information will looks like this:  
+``` 
+[
+    {
+    "sensor_id": 1, 
+    "ambient_light": 44.75905118601748, 
+    "temperature": 18.330836454431964, 
+    "b_pressure": 1016.5539950062422
+    } 
+]
+```  
+      
