@@ -30,11 +30,11 @@ import java.util.stream.Collectors;
 
 public class WeatherGUI {
     @FXML
-    private LineChart<Number, Number> temperatureGraphs;
+    private LineChart<String, Number> temperatureGraphs;
     @FXML
-    private LineChart<Number, Number> pressureGraphs;
+    private LineChart<String, Number> pressureGraphs;
     @FXML
-    private LineChart<Number, Number> ambientLightGraphs;
+    private LineChart<String, Number> ambientLightGraphs;
 
     private List<Sensor> sensors;
     private List<Reading> readings;
@@ -89,47 +89,43 @@ public class WeatherGUI {
         User.getSensorBools().forEach(System.out::println);
     }
 
+    private String getSensorNameFromId(int id) {
+        return sensors.stream()
+                .filter(sensor -> sensor.getId() == id)
+                .map(Sensor::getLocation)
+                .findAny()
+                .orElse("");
+    }
+
     public void addTemperatureGraph(int sensor) {
-        var graph = new XYChart.Series<Number, Number>();
-        var graphName = sensors.stream()
-                .filter(sensor1 -> sensor1.getId() == sensor)
-                .collect(Collectors.toList())
-                .get(0)
-                .getLocation();
-        graph.setName(graphName);
+        var graph = new XYChart.Series<String, Number>();
+        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
+        graph.setName(getSensorNameFromId(sensor));
         readings.stream()
                 .filter(reading -> reading.getSensor_id() == sensor)
-                .map(reading -> new XYChart.Data<Number, Number>(reading.getDate().toEpochSecond(ZoneOffset.UTC), reading.getTemperature()))
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getTemperature()))
                 .forEach(reading -> graph.getData().add(reading));
         temperatureGraphs.getData().add(graph);
     }
 
     public void addPressureGraph(int sensor) {
-        var graph = new XYChart.Series<Number, Number>();
-        var graphName = sensors.stream()
-                .filter(sensor1 -> sensor1.getId() == sensor)
-                .collect(Collectors.toList())
-                .get(0)
-                .getLocation();
-        graph.setName(graphName);
+        var graph = new XYChart.Series<String, Number>();
+        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
+        graph.setName(getSensorNameFromId(sensor));
         readings.stream()
                 .filter(reading -> reading.getSensor_id() == sensor)
-                .map(reading -> new XYChart.Data<Number, Number>(reading.getDate().toEpochSecond(ZoneOffset.UTC), reading.getA_pressure()))
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getA_pressure()))
                 .forEach(reading -> graph.getData().add(reading));
         pressureGraphs.getData().add(graph);
     }
 
     public void addAmbientLightGraph(int sensor) {
-        var graph = new XYChart.Series<Number, Number>();
-        var graphName = sensors.stream()
-                .filter(sensor1 -> sensor1.getId() == sensor)
-                .collect(Collectors.toList())
-                .get(0)
-                .getLocation();
-        graph.setName(graphName);
+        var graph = new XYChart.Series<String, Number>();
+        var format = DateTimeFormatter.ofPattern("d MMMM uuuu H:mm:ss");
+        graph.setName(getSensorNameFromId(sensor));
         readings.stream()
                 .filter(reading -> reading.getSensor_id() == sensor)
-                .map(reading -> new XYChart.Data<Number, Number>(reading.getDate().toEpochSecond(ZoneOffset.UTC), reading.getAmbient_light()))
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getAmbient_light()))
                 .forEach(reading -> graph.getData().add(reading));
         ambientLightGraphs.getData().add(graph);
     }

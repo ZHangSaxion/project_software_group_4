@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.chart.CategoryAxis?>
 <AnchorPane id="mainStage" minHeight="680.0" minWidth="1020.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.WeatherGUI">
     <stylesheets>
         <URL value="@WindowStyles.css" />
@@ -61,7 +62,7 @@
                 <children>
                     <LineChart id="pressureCh" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <NumberAxis side="BOTTOM" />
+                            <CategoryAxis side="BOTTOM" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis side="LEFT" />
@@ -73,7 +74,7 @@
 
                     <LineChart id="tempCh" prefHeight="280.0" prefWidth="450.0" title="Temperature" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <NumberAxis side="BOTTOM" />
+                            <CategoryAxis side="BOTTOM" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis side="LEFT" />
@@ -82,7 +83,7 @@
 
                     <LineChart id="lightCh" prefHeight="280.0" prefWidth="450.0" title="Ambient Light" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                         <xAxis>
-                            <NumberAxis side="BOTTOM" />
+                            <CategoryAxis side="BOTTOM" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis side="LEFT" />
