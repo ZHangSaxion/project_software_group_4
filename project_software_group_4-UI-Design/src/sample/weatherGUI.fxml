@@ -48,10 +48,10 @@
                 <children>
                     <LineChart id="pressureCh" fx:id="pressureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" autoRanging="false" side="BOTTOM" tickLabelGap="10.0" tickLabelRotation="45.0" tickLength="5.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis animated="false" forceZeroInRange="false" label="Pressure (mBar)" side="LEFT" />
+                            <NumberAxis animated="false" forceZeroInRange="false" label="Pressure (hPa)" side="LEFT" />
                         </yAxis>
                         <GridPane.margin>
                             <Insets />
@@ -60,7 +60,7 @@
 
                     <LineChart id="tempCh" fx:id="temperatureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Temperature" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" autoRanging="false" side="BOTTOM" tickLabelGap="10.0" tickLabelRotation="45.0" tickLength="5.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis animated="false" forceZeroInRange="false" label="Temperature (°C)" side="LEFT" />
@@ -69,7 +69,7 @@
 
                     <LineChart id="lightCh" fx:id="ambientLightGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Ambient Light" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" autoRanging="false" side="BOTTOM" tickLabelGap="10.0" tickLabelRotation="45.0" tickLength="5.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis animated="false" forceZeroInRange="false" label="Ambient Light (%)" side="LEFT" />

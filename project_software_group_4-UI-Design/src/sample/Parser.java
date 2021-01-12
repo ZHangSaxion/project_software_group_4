@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class Parser {
     private static final String baseUrl = "https://wsgroup4.herokuapp.com/weather_station_java_api/";
     private static final String key = "key=saxion_group_4";
+    private static int retryCounter = 0;
 
     /**
      * returns a raw json string from a url
@@ -33,6 +37,16 @@ public class Parser {
                     .collect(Collectors.joining());
         } catch(IOException e) {
             e.printStackTrace();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+            if(retryCounter < 5) {
+                retryCounter += 1;
+                getJsonFromURL(url);
+            }
+            retryCounter = 0;
             return "";
         }
     }
@@ -70,9 +84,9 @@ public class Parser {
      * @param other the LocalDateTime to compare to
      * @return the amount of difference in days
      */
-    private static int dayDifference(LocalDateTime other) {
+    private static long dayDifference(LocalDateTime other) {
         var now = LocalDateTime.now();
-        return - ( (other.getYear() * 365 + other.getDayOfYear()) - (now.getYear() * 365 + now.getDayOfYear()) ) + 1;
+        return ChronoUnit.DAYS.between(other, now);
     }
 
     /**
@@ -111,8 +125,9 @@ public class Parser {
      */
     public static List<Reading> getReadings(LocalDateTime begin, LocalDateTime end) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=0&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=0&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(reading -> reading.getDate().isAfter(begin) && reading.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -126,8 +141,9 @@ public class Parser {
      */
     public static List<Reading> getReadings(LocalDateTime begin, LocalDateTime end, int sensorId) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=0&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=0&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(reading -> reading.getDate().isAfter(begin) && reading.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -141,8 +157,9 @@ public class Parser {
      */
     public static List<Reading> getTemperatures(LocalDateTime begin, LocalDateTime end) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=2&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=2&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(temperature -> temperature.getDate().isAfter(begin) && temperature.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -157,8 +174,9 @@ public class Parser {
      */
     public static List<Reading> getTemperatures(LocalDateTime begin, LocalDateTime end, int sensorId) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=2&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=2&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(temperature -> temperature.getDate().isAfter(begin) && temperature.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -172,8 +190,9 @@ public class Parser {
      */
     public static List<Reading> getPressures(LocalDateTime begin, LocalDateTime end) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=3&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=3&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(pressure -> pressure.getDate().isAfter(begin) && pressure.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -188,8 +207,9 @@ public class Parser {
      */
     public static List<Reading> getPressures(LocalDateTime begin, LocalDateTime end, int sensorId) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=3&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=3&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(pressure -> pressure.getDate().isAfter(begin) && pressure.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -203,8 +223,9 @@ public class Parser {
      */
     public static List<Reading> getAmbientLights(LocalDateTime begin, LocalDateTime end) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=1&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=-1&req_type=1&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(ambientLight -> ambientLight.getDate().isAfter(begin) && ambientLight.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
@@ -219,14 +240,16 @@ public class Parser {
      */
     public static List<Reading> getAmbientLights(LocalDateTime begin, LocalDateTime end, int sensorId) {
         var url = baseUrl + "readings?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=1&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + "&req_type=1&" + key;
         return getClassObjects(url, Reading.class).parallelStream()
+                .filter(ambientLight -> ambientLight.getDate().isAfter(begin) && ambientLight.getDate().isBefore(end))
                 .sorted(Comparator.comparing(Reading::getDate))
                 .collect(Collectors.toList());
     }
 
     /**
      * returns the average values between the two timepoints sorted on sensor id
+     * due to a limitation in the design it's accuracy is in days
      *
      * @param begin readings after this timepoint will be used in the averages
      * @param end readings before this timepoint will be used in the averages
@@ -234,7 +257,7 @@ public class Parser {
      */
     public static List<Average> getAverages(LocalDateTime begin, LocalDateTime end) {
         var url = baseUrl + "average?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=-1&" + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=-1&" + key;
         return getClassObjects(url, Average.class).stream()
                 .sorted(Comparator.comparing(Average::getSensor_id))
                 .collect(Collectors.toList());
@@ -250,9 +273,9 @@ public class Parser {
      */
     public static Average getAverages(LocalDateTime begin, LocalDateTime end, int sensorId) {
         var url = baseUrl + "average?day_from=" +
-                dayDifference(begin) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + '&' + key;
+                (dayDifference(begin) + 1) + "&day_to=" + dayDifference(end) + "&id=" + sensorId + '&' + key;
         return getClassObjects(url, Average.class).stream()
                 .findAny()
-                .orElse(new Average());
+                .orElse(new Average(0, 0, 0, 0));
     }
 }

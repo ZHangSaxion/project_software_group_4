@@ -2,14 +2,12 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +35,7 @@ public class Config {
         choiceBox.setValue("all sensors");
         choiceBox.setOnAction(this::updateButtonsFromChoiceBox);
         sensors = Parser.getLocations();
-        sensorBools = new ArrayList<>();
+        sensorBools = User.getSensorBools();
         var sensorCheckBoxes = sensors.stream()
                 .map(sensor -> {
                     var chk = new CheckBox(sensor.getLocation());
@@ -48,6 +46,14 @@ public class Config {
                 })
                 .collect(Collectors.toList());
         sensorList.getChildren().addAll(sensorCheckBoxes);
+        sensorList.getChildren().stream()
+                .map(chk -> (CheckBox) chk)
+                .forEach(checkBox -> {
+                    checkBox.setSelected(sensorBools.stream()
+                            .anyMatch(sensorBool -> sensorBool.getSensor().getLocation().equals(checkBox.getText())));
+                    if(checkBox.isSelected()) choiceBox.getItems().add(checkBox.getText());
+                });
+        updateButtonsFromChoiceBox(new ActionEvent());
     }
 
     private SensorBool getSensorBoolWithLocation(String location) {
@@ -67,13 +73,19 @@ public class Config {
                     .orElse(new Sensor());
             sensorBools.add(new SensorBool(sensor));
         } else {
+            if(choiceBox.getValue().equals(chk.getText())) choiceBox.setValue("all sensors");
             choiceBox.getItems().remove(chk.getText());
             sensorBools.removeIf(sensorBool -> sensorBool.getSensor().getLocation().equals(chk.getText()));
         }
+        updateButtonsFromChoiceBox(new ActionEvent());
     }
 
     public void updateButtonsFromChoiceBox(ActionEvent e) {
-        if(choiceBox.getValue().equals("all sensors")) {
+        if(sensorBools.isEmpty()) {
+            temperature.setSelected(false);
+            pressure.setSelected(false);
+            ambientLight.setSelected(false);
+        } else if(choiceBox.getValue().equals("all sensors")) {
             temperature.setSelected(sensorBools.stream().allMatch(SensorBool::isTemperature));
             pressure.setSelected(sensorBools.stream().allMatch(SensorBool::isPressure));
             ambientLight.setSelected(sensorBools.stream().allMatch(SensorBool::isAmbientLight));

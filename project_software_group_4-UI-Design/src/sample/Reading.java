@@ -53,6 +53,15 @@ public class Reading {
     }
 
     /**
+     * function used to alter the datetime for rounding timestamps in graphs
+     *
+     * @param date the new datetime
+     */
+    public void setDate(LocalDateTime date) {
+        this.date = date.format(format);
+    }
+
+    /**
      *
      * @return atmospheric pressure, single decimal precision
      */

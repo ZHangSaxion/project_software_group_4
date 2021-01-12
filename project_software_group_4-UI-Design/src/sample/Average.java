@@ -1,10 +1,24 @@
 package sample;
 
 public class Average {
-    private int sensor_id;
-    private double temperature;
-    private double b_pressure;
-    private double ambient_light;
+    private final int sensor_id;
+    private final double temperature;
+    private final double b_pressure;
+    private final double ambient_light;
+
+    /**
+     * constructor used in AverageTable because of limitations in API
+     * @param sensor_id sensor_id
+     * @param temperature temperature
+     * @param b_pressure b_pressure
+     * @param ambient_light ambient_light
+     */
+    public Average(int sensor_id, double temperature, double b_pressure, double ambient_light) {
+        this.sensor_id = sensor_id;
+        this.temperature = temperature;
+        this.b_pressure = b_pressure;
+        this.ambient_light = ambient_light;
+    }
 
     /**
      *
