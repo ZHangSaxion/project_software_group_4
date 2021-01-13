@@ -18,15 +18,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Parser {
+    /** all api calls use this string to concatenate to */
     private static final String baseUrl = "https://wsgroup4.herokuapp.com/weather_station_java_api/";
+
+    /** a unique key used for "security" */
     private static final String key = "key=saxion_group_4";
+
+    /** variable used in getJsonFromURL(String url) circumvent the infamous error code 500 */
     private static int retryCounter = 0;
 
     /**
-     * returns a raw json string from a url
+     * returns a raw json string from a url, if the url is unable to return anything it has 5 more chances
      *
      * @param url the url to get the data from
-     * @return the string returned by the url or an ampty one if something went wrong
+     * @return the string returned by the url or an empty one if the retryCounter reaches 5
      */
     private static String getJsonFromURL(String url) {
         try {

@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -11,21 +10,30 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AverageTable {
+    /** the table to store the average data in */
     @FXML
     public TableView<Average> tableView;
 
+    /** column containing the sensor id's */
     @FXML
-    public TableColumn<Average, String> sensor; // The sensor column.
+    public TableColumn<Average, String> sensor;
 
+    /** column containing the average temperatures */
     @FXML
-    public TableColumn<Average, Double> temp; // The temperature column.
+    public TableColumn<Average, Double> temp;
 
+    /** column containing the average pressures */
     @FXML
-    public TableColumn<Average, Double> pressure; // The pressure column.
+    public TableColumn<Average, Double> pressure;
 
+    /** column containing the average ambient light percentages */
     @FXML
-    public TableColumn<Average, Double> light; // The ambient light column.
+    public TableColumn<Average, Double> light;
 
+    /**
+     * initialization, the average table doesn't actually need to do more than storing the averages of
+     * that specific moment so this is the only function
+     */
     public void initialize() {
         var averages = new ArrayList<Average>();
         var readings = Parser.getReadings(User.getBegin(), User.getEnd());
@@ -56,14 +64,5 @@ public class AverageTable {
         pressure.setCellValueFactory(new PropertyValueFactory<>("b_pressure"));
         light.setCellValueFactory(new PropertyValueFactory<>("ambient_light"));
         tableView.setItems(FXCollections.observableList(averages));
-    }
-
-    private String getSensorNameFromId(int id) {
-        return User.getSensorBools().stream()
-                .map(SensorBool::getSensor)
-                .filter(sensor1 -> sensor1.getId() == id)
-                .map(Sensor::getLocation)
-                .findAny()
-                .orElse("");
     }
 }

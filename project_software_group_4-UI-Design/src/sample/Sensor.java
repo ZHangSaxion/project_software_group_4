@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Sensor {
+    /** a unique sensor id */
     private int sensor_id;
+
+    /** the name/location of the sensor */
     private String location;
+
+    /** the date the sensor was added to the database */
     private String date;
 
     /**
-     *
      * @return a unique integer id
      */
     public int getId() {
@@ -17,7 +21,6 @@ public class Sensor {
     }
 
     /**
-     *
      * @return the textual representation of the sensor, usually the location is in here
      */
     public String getLocation() {
@@ -25,7 +28,6 @@ public class Sensor {
     }
 
     /**
-     *
      * @return a LocalDateTime object that describes when the sensor was added
      */
     public LocalDateTime getDate() {
@@ -49,7 +51,6 @@ public class Sensor {
     }
 
     /**
-     *
      * @return returns the sensor data as it was in the original JSON format
      */
     @Override

@@ -4,16 +4,28 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Reading {
+    /** the format used to convert LocalDateTime to a String and vice versa */
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /** a unique reading id */
     private int id;
+
+    /** the id of the sensor the reading came from */
     private int sensor_id;
-    private double ambient_light;
-    private double temperature;
+
+    /** the datetime formatted as a string due to the nature of the json parser */
     private String date;
+
+    /** the ambient light value in percent */
+    private double ambient_light;
+
+    /** the temperature in degrees Celsius */
+    private double temperature;
+
+    /** the barometric pressure in hPa */
     private double b_pressure;
 
     /**
-     *
      * @return a unique integer id
      */
     public int getId() {
@@ -21,7 +33,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return the unique integer id from the sensor the reading came from
      */
     public int getSensor_id() {
@@ -29,7 +40,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return ambient light value, values range from 0.0 to 100.0 including
      */
     public double getAmbient_light() {
@@ -37,7 +47,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return temperature in degrees Celsius, single decimal precision
      */
     public double getTemperature() {
@@ -45,7 +54,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return a LocalDateTime object used in other functions, formatted as ISO_DATE_TIME
      */
     public LocalDateTime getDate() {
@@ -62,7 +70,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return atmospheric pressure, single decimal precision
      */
     public double getB_pressure() {
@@ -89,7 +96,6 @@ public class Reading {
     }
 
     /**
-     *
      * @return returns the reading as it was in the original JSON format
      */
     @Override

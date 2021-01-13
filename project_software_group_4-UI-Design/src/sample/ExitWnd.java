@@ -8,13 +8,22 @@ import java.io.IOException;
 
 public class ExitWnd {
 
-    public void yesExit(ActionEvent actionEvent) {
+    /**
+     * function to quit the program
+     *
+     * @param e unused ActionEvent
+     */
+    public void yesExit(ActionEvent e) {
         System.exit(0);
     }
 
-    public void noExit(ActionEvent e) throws IOException {
+    /**
+     * function to return to the main window
+     *
+     * @param e ActionEvent to get the stage of the button that executed the function
+     */
+    public void noExit(ActionEvent e) {
         ((Stage)(((Button)e.getSource()).getScene().getWindow())).close();
-
     }
 
 }

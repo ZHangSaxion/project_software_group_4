@@ -1,13 +1,21 @@
 package sample;
 
 public class Average {
+    /** a unique sensor id */
     private final int sensor_id;
+
+    /** the temperature in degrees Celsius */
     private final double temperature;
+
+    /** the barometric pressure in hPa */
     private final double b_pressure;
+
+    /** the ambient light in percent */
     private final double ambient_light;
 
     /**
      * constructor used in AverageTable because of limitations in API
+     *
      * @param sensor_id sensor_id
      * @param temperature temperature
      * @param b_pressure b_pressure
@@ -21,7 +29,6 @@ public class Average {
     }
 
     /**
-     *
      * @return a unique sensor id
      */
     public int getSensor_id() {
@@ -29,7 +36,6 @@ public class Average {
     }
 
     /**
-     *
      * @return the average temperature rounded to a single decimal
      */
     public double getTemperature() {
@@ -37,7 +43,6 @@ public class Average {
     }
 
     /**
-     *
      * @return the average pressure rounded to a single decimal
      */
     public double getB_pressure() {
@@ -45,7 +50,6 @@ public class Average {
     }
 
     /**
-     *
      * @return the average ambient light rounded to a single decimal
      */
     public double getAmbient_light() {
@@ -70,7 +74,6 @@ public class Average {
     }
 
     /**
-     *
      * @return returns the average as it was in the original JSON format
      */
     @Override
