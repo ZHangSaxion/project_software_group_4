@@ -6,9 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
-
-<AnchorPane prefHeight="100.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MsgError">
+<AnchorPane prefHeight="100.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MsgError">
 <stylesheets>
     <URL value="@WindowStyles.css" />
 </stylesheets>
@@ -19,11 +17,10 @@
         </VBox.margin>
     </Text>
 </VBox>
-    <HBox alignment="BOTTOM_CENTER" layoutY="105.0" prefHeight="40.0" prefWidth="300.0" AnchorPane.bottomAnchor="20.0"
-          AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="105.0">
-        <Button fx:id="yesBtn" mnemonicParsing="false" onAction="#closeMsgError" prefWidth="60.0" text="OK">
+    <HBox alignment="BOTTOM_CENTER" layoutY="105.0" prefHeight="40.0" prefWidth="300.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="105.0">
+        <Button mnemonicParsing="false" onAction="#closeMsgError" prefWidth="60.0" text="OK">
             <HBox.margin>
-                <Insets bottom="10.0" top="10.0"/>
+                <Insets bottom="10.0" top="10.0" />
             </HBox.margin>
         </Button>
     </HBox>

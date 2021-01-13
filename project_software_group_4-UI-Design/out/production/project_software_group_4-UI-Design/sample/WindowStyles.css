@@ -29,7 +29,7 @@
 .button:hover{
     -fx-background-color: linear-gradient(#2A5058, #61a2b1);
 }
-#textEx {
+#text{
     -fx-font-size: 24;
     -fx-font-family: Arial;
     -fx-font-weight: bold;
@@ -37,12 +37,23 @@
     -fx-fill: #818181;
     -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0.0, 0, 2);
 }
-#textQ {
-    -fx-font-size: 24;
+#text1{
+    -fx-font-size: 20;
     -fx-font-family: Arial;
     -fx-font-weight: bold;
     -fx-font-style: italic;
     -fx-fill: #818181;
     -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0.0, 0, 2);
+}
+#text2 {
+    -fx-font-size: 16;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-fill: #818181;
+    -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0.0, 0, 2);
+}
+#credBack{
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
 }
 

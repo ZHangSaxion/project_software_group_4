@@ -1,13 +1,16 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class AverageTable {
     /** the table to store the average data in */
@@ -31,10 +34,19 @@ public class AverageTable {
     public TableColumn<Average, Double> light;
 
     /**
-     * initialization, the average table doesn't actually need to do more than storing the averages of
-     * that specific moment so this is the only function
+     * initialization, a placeholder gets set for the table and the averages get
+     * calculated in a separate thread so the user does not have to wait for the window to open
      */
     public void initialize() {
+        tableView.setPlaceholder(new Text("retrieving averages..."));
+        new Thread(this::initializeAverages).start();
+    }
+
+    /**
+     * calls the api to get all the readings in the timeframe, then calculates averages
+     * and passes those to initializeFX() when it is finished
+     */
+    private void initializeAverages() {
         var averages = new ArrayList<Average>();
         var readings = Parser.getReadings(User.getBegin(), User.getEnd());
         readings.stream()
@@ -59,6 +71,17 @@ public class AverageTable {
                             .orElse(0);
                     averages.add(new Average(sensorId, temperature, pressure, ambientLight));
                 });
+        Platform.runLater(() -> initializeFX(averages));
+    }
+
+    /**
+     * javafx does not allow updating fxml objects in a different thread so the table has to be updated
+     * separately. if the list of averages is empty, the table will say so
+     *
+     * @param averages the list of just calculated averages
+     */
+    private void initializeFX(List<Average> averages) {
+        if(averages.isEmpty()) tableView.setPlaceholder(new Text("no readings found in this timeframe"));
         sensor.setCellValueFactory(new PropertyValueFactory<>("sensor_id"));
         temp.setCellValueFactory(new PropertyValueFactory<>("temperature"));
         pressure.setCellValueFactory(new PropertyValueFactory<>("b_pressure"));
