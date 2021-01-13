@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AverageTable {
     @FXML
@@ -31,6 +32,7 @@ public class AverageTable {
         readings.stream()
                 .map(Reading::getSensor_id)
                 .distinct()
+                .sorted(Comparator.comparing(Integer::intValue))
                 .forEach(sensorId -> {
                     var temperature = readings.parallelStream()
                             .filter(reading -> reading.getSensor_id() == sensorId)

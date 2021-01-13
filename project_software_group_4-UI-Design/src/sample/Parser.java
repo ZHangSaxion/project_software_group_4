@@ -38,13 +38,13 @@ public class Parser {
         } catch(IOException e) {
             e.printStackTrace();
             try {
-                Thread.sleep(200);
+                Thread.sleep(500);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
             if(retryCounter < 5) {
                 retryCounter += 1;
-                getJsonFromURL(url);
+                return getJsonFromURL(url);
             }
             retryCounter = 0;
             return "";

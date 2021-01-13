@@ -2,13 +2,10 @@ package sample;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -20,19 +17,22 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class WeatherGUI {
     @FXML
-    private volatile LineChart<String, Number> temperatureGraphs;
+    private LineChart<String, Number> temperatureGraphs;
 
     @FXML
-    private volatile LineChart<String, Number> pressureGraphs;
+    private LineChart<String, Number> pressureGraphs;
 
     @FXML
-    private volatile LineChart<String, Number> ambientLightGraphs;
+    private LineChart<String, Number> ambientLightGraphs;
 
     @FXML
     private DatePicker dateFrom;
@@ -45,6 +45,10 @@ public class WeatherGUI {
 
     @FXML
     private ComboBox<String> timeTo;
+
+    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
+    private LocalDateTime dtFrom;
+    private LocalDateTime dtTo;
 
     public void initialize() {
         //initialize the start and finish date - future date inhibited
@@ -77,47 +81,6 @@ public class WeatherGUI {
         timeTo.setValue("00:00");
     }
 
-    public void updateGraphs(ActionEvent e) {
-        var dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
-        var dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
-        if(dtFrom.isEqual(dtTo) || dtFrom.isAfter(dtTo)) {
-            try {
-                errorMsg();
-                return;
-            } catch(IOException iox) {
-                iox.printStackTrace();
-            }
-        }
-        temperatureGraphs.getData().clear();
-        pressureGraphs.getData().clear();
-        ambientLightGraphs.getData().clear();
-        User.getSensorBools().forEach(sensorBool -> {
-            var id = sensorBool.getSensor().getId();
-            if(sensorBool.isTemperature()) new Thread(() -> addTemperatureGraph(id)).start();
-            else new Thread(() -> removeTemperatureGraph(id)).start();
-            if(sensorBool.isPressure()) new Thread(() -> addPressureGraph(id)).start();
-            else new Thread(() -> removePressureGraph(id)).start();
-            if(sensorBool.isAmbientLight()) new Thread(() -> addAmbientLightGraph(id)).start();
-            else new Thread(() -> removeAmbientLightGraph(id)).start();
-        });
-//        Platform.runLater(this::sortAxis);
-    }
-
-//    private void sortAxis() { //TODO sort axis correctly
-//        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
-//        var temperatureAxis = (CategoryAxis) temperatureGraphs.getXAxis();
-//        var orderedTemperatureDates = temperatureGraphs.getData().stream()
-//                .flatMap(stringNumberSeries -> stringNumberSeries.getData().stream()
-//                        .map(XYChart.Data::getXValue))
-//                .distinct()
-//                .sorted(Comparator.comparing(datetime -> LocalDateTime.parse(datetime, format)))
-//                .collect(Collectors.toList());
-//
-//        var pressureAxis = (CategoryAxis) pressureGraphs.getXAxis();
-//        var ambientLightAxis = (CategoryAxis) ambientLightGraphs.getXAxis();
-//
-//    }
-
     private String getSensorNameFromId(int id) {
         return User.getSensorBools().stream()
                 .map(SensorBool::getSensor)
@@ -127,126 +90,85 @@ public class WeatherGUI {
                 .orElse("");
     }
 
-    private int getSensorIdFromName(String location) {
-        return User.getSensorBools().stream()
-                .map(SensorBool::getSensor)
-                .filter(sensor -> sensor.getLocation().equals(location))
-                .map(Sensor::getId)
-                .findAny()
-                .orElse(0);
-    }
-
-    private Reading roundTime(Reading reading) {
-        LocalDateTime rounded;
-        if(reading.getDate().getMinute() < 3) {
-            rounded = reading.getDate().minusMinutes(reading.getDate().getMinute() % 5);
-        } else {
-            rounded = reading.getDate().plusMinutes(5 - (reading.getDate().getMinute() % 5));
+    private boolean invalidTimeFrame() {
+        try {
+            dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
+            dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
+        } catch(DateTimeParseException e) {
+            e.printStackTrace();
+            try {
+                errorMsg();
+                return true;
+            } catch (IOException iox) {
+                iox.printStackTrace();
+            }
         }
-        reading.setDate(rounded);
-        return reading;
-    }
-
-    public void addTemperatureGraph(int sensor) {
-        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
-        var dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
-        var dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
-        var graph = new XYChart.Series<String, Number>();
-        graph.setName(getSensorNameFromId(sensor));
-        Parser.getTemperatures(dtFrom, dtTo, sensor).parallelStream()
-                .map(this::roundTime)
-                .distinct()
-                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getTemperature()))
-                .sorted(Comparator.comparing(XYChart.Data::getXValue))
-                .collect(Collectors.toList())
-                .forEach(graph.getData()::add);
-        Platform.runLater(() -> temperatureGraphs.getData().add(graph));
-    }
-
-    public void addPressureGraph(int sensor) {
-        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
-        var dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
-        var dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
-        var graph = new XYChart.Series<String, Number>();
-        graph.setName(getSensorNameFromId(sensor));
-        Parser.getPressures(dtFrom, dtTo, sensor).parallelStream()
-                .map(this::roundTime)
-                .distinct()
-                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getB_pressure()))
-                .sorted(Comparator.comparing(XYChart.Data::getXValue))
-                .collect(Collectors.toList())
-                .forEach(graph.getData()::add);
-        Platform.runLater(() -> pressureGraphs.getData().add(graph));
-    }
-
-    public void addAmbientLightGraph(int sensor) {
-        var format = DateTimeFormatter.ofPattern("d MMM uuuu HH:mm");
-        var dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
-        var dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
-        var graph = new XYChart.Series<String, Number>();
-        graph.setName(getSensorNameFromId(sensor));
-        Parser.getAmbientLights(dtFrom, dtTo, sensor).parallelStream()
-                .map(this::roundTime)
-                .distinct()
-                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getAmbient_light()))
-                .sorted(Comparator.comparing(XYChart.Data::getXValue))
-                .collect(Collectors.toList())
-                .forEach(graph.getData()::add);
-        Platform.runLater(() -> ambientLightGraphs.getData().add(graph));
-    }
-
-    public void removeTemperatureGraph(int sensor) {
-        temperatureGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
-    }
-
-    public void removePressureGraph(int sensor) {
-        pressureGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
-    }
-
-    public void removeAmbientLightGraph(int sensor) {
-        ambientLightGraphs.getData().removeIf(graph -> getSensorIdFromName(graph.getName()) == sensor);
-    }
-
-    //show exit window
-    public void exitMenu() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "ExitWnd.fxml" ) );
-        Parent root2 = fxmlLoader.load ();
-        Stage stage = new Stage ();
-        stage.setResizable(false);
-        stage.setTitle ( "Good Bye!" );
-        stage.setScene ( new Scene ( root2 ) );
-        stage.show ();
-    }
-    //show average window
-    public void openAvg() throws IOException {
-        var dtFrom = dateFrom.getValue().atTime(LocalTime.parse(timeFrom.getValue()));
-        var dtTo = dateTo.getValue().atTime(LocalTime.parse(timeTo.getValue()));
         if(dtFrom.isEqual(dtTo) || dtFrom.isAfter(dtTo)) {
             try {
                 errorMsg();
-                return;
+                return true;
             } catch(IOException iox) {
                 iox.printStackTrace();
             }
         }
-        User.setTimeFrame(dtFrom, dtTo);
-        FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ("averageTable.fxml"));
-        Parent root1 = fxmlLoader.load ();
-        Stage stage = new Stage ();
-        stage.setResizable(false);
-        stage.setTitle ( "Average Window" );
-        stage.setScene ( new Scene ( root1 ) );
-        stage.show ();
+        return false;
     }
 
-    //show error message
-    public void errorMsg() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "MsgError.fxml" ) );
-        Parent root3 = fxmlLoader.load ();
-        Stage stage = new Stage ();
-        stage.setTitle ( "Time Interval Error!" );
-        stage.setScene ( new Scene ( root3 ) );
-        stage.show ();
+    public void updateGraphs() {
+        if(invalidTimeFrame()) return;
+        temperatureGraphs.getData().clear();
+        pressureGraphs.getData().clear();
+        ambientLightGraphs.getData().clear();
+        User.getSensorBools().forEach(sensorBool -> {
+                var id = sensorBool.getSensor().getId();
+                if(sensorBool.isTemperature()) new Thread(() -> addTemperatureGraph(id)).start();
+                if(sensorBool.isPressure()) new Thread(() -> addPressureGraph(id)).start();
+                if(sensorBool.isAmbientLight()) new Thread(() -> addAmbientLightGraph(id)).start();
+        });
+    }
+
+    private void addGraph(LineChart<String, Number> chart, XYChart.Series<String, Number> graph) {
+        chart.getData().add(graph);
+        var sortedTime = chart.getData().parallelStream()
+                .flatMap(stringNumberSeries -> stringNumberSeries.getData().stream().map(XYChart.Data::getXValue))
+                .sorted(Comparator.comparing(s -> LocalDateTime.parse(s, format)))
+                .distinct()
+                .collect(Collectors.toList());
+        ((CategoryAxis) chart.getXAxis()).setCategories(FXCollections.observableList(sortedTime));
+        var sortedGraphs = chart.getData().stream()
+                .sorted(Comparator.comparing(XYChart.Series::getName))
+                .collect(Collectors.toList());
+        chart.setData(FXCollections.observableList(sortedGraphs));
+    }
+
+    public void addTemperatureGraph(int sensor) {
+        var graph = new XYChart.Series<String, Number>();
+        graph.setName(getSensorNameFromId(sensor));
+        Parser.getTemperatures(dtFrom, dtTo, sensor).parallelStream()
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getTemperature()))
+                .collect(Collectors.toList())
+                .forEach(graph.getData()::add);
+        Platform.runLater(() -> addGraph(temperatureGraphs, graph));
+    }
+
+    public void addPressureGraph(int sensor) {
+        var graph = new XYChart.Series<String, Number>();
+        graph.setName(getSensorNameFromId(sensor));
+        Parser.getPressures(dtFrom, dtTo, sensor).parallelStream()
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getB_pressure()))
+                .collect(Collectors.toList())
+                .forEach(graph.getData()::add);
+        Platform.runLater(() -> addGraph(pressureGraphs, graph));
+    }
+
+    public void addAmbientLightGraph(int sensor) {
+        var graph = new XYChart.Series<String, Number>();
+        graph.setName(getSensorNameFromId(sensor));
+        Parser.getAmbientLights(dtFrom, dtTo, sensor).parallelStream()
+                .map(reading -> new XYChart.Data<String, Number>(reading.getDate().format(format), reading.getAmbient_light()))
+                .collect(Collectors.toList())
+                .forEach(graph.getData()::add);
+        Platform.runLater(() -> addGraph(ambientLightGraphs, graph));
     }
 
     private void setLastX(TemporalAmount amount) {
@@ -274,6 +196,37 @@ public class WeatherGUI {
         setLastX(Period.ofMonths(1));
     }
 
+    public void exitMenu() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "ExitWnd.fxml" ) );
+        Parent root2 = fxmlLoader.load ();
+        Stage stage = new Stage ();
+        stage.setResizable(false);
+        stage.setTitle ( "Good Bye!" );
+        stage.setScene ( new Scene ( root2 ) );
+        stage.show ();
+    }
+
+    public void openAvg() throws IOException {
+        if(invalidTimeFrame()) return;
+        User.setTimeFrame(dtFrom, dtTo);
+        FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ("averageTable.fxml"));
+        Parent root1 = fxmlLoader.load ();
+        Stage stage = new Stage ();
+        stage.setResizable(false);
+        stage.setTitle ( "Average Window" );
+        stage.setScene ( new Scene ( root1 ) );
+        stage.show ();
+    }
+
+    public void errorMsg() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "MsgError.fxml" ) );
+        Parent root3 = fxmlLoader.load ();
+        Stage stage = new Stage ();
+        stage.setTitle ( "Time Interval Error!" );
+        stage.setScene ( new Scene ( root3 ) );
+        stage.show ();
+    }
+
     public void shCredentials() throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader ( getClass ().getResource ( "Credentials.fxml" ) );
         Parent root2 = fxmlLoader.load ();
@@ -283,7 +236,7 @@ public class WeatherGUI {
         stage.show ();
     }
 
-    public void openConfig(ActionEvent actionEvent) throws IOException {
+    public void openConfig() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ( "config.fxml" ));
         Parent root1 = fxmlLoader.load ();
         Stage stage = new Stage ();
@@ -291,16 +244,4 @@ public class WeatherGUI {
         stage.setScene ( new Scene ( root1 ) );
         stage.show ();
     }
-
-    public void exitMenu(ActionEvent e) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader (getClass ().getResource ( "ExitWnd.fxml" ));
-        Parent root2 = fxmlLoader.load ();
-        Stage stage = new Stage ();
-        stage.setTitle ( "Good Bye!" );
-        stage.setScene ( new Scene ( root2 ) );
-        stage.show ();
-    }
-
-
-
 }

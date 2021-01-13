@@ -8,6 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class Config {
         choiceBox.setValue("all sensors");
         choiceBox.setOnAction(this::updateButtonsFromChoiceBox);
         sensors = Parser.getLocations();
-        sensorBools = User.getSensorBools();
+        sensorBools = new ArrayList<>(User.getSensorBools());
         var sensorCheckBoxes = sensors.stream()
                 .map(sensor -> {
                     var chk = new CheckBox(sensor.getLocation());

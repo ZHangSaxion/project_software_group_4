@@ -46,30 +46,30 @@
           </MenuBar>
             <GridPane id="mainGrid" alignment="center" hgap="10" minHeight="650.0" prefHeight="650.0" prefWidth="980.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
                 <children>
-                    <LineChart id="pressureCh" fx:id="pressureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <LineChart id="pressureCh" fx:id="pressureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Pressure" verticalGridLinesVisible="false" verticalZeroLineVisible="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="67.5" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis animated="false" forceZeroInRange="false" label="Pressure (hPa)" side="LEFT" />
+                            <NumberAxis animated="false" forceZeroInRange="false" label="Pressure (hPa)" lowerBound="900.0" side="LEFT" upperBound="1100.0" />
                         </yAxis>
                         <GridPane.margin>
                             <Insets />
                         </GridPane.margin>
                     </LineChart>
 
-                    <LineChart id="tempCh" fx:id="temperatureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Temperature" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <LineChart id="tempCh" fx:id="temperatureGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Temperature" verticalGridLinesVisible="false" verticalZeroLineVisible="false" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="67.5" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis animated="false" forceZeroInRange="false" label="Temperature (°C)" side="LEFT" />
+                            <NumberAxis animated="false" forceZeroInRange="false" label="Temperature (°C)" lowerBound="-10.0" side="LEFT" upperBound="40.0" />
                         </yAxis>
                     </LineChart>
 
-                    <LineChart id="lightCh" fx:id="ambientLightGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Ambient Light" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                    <LineChart id="lightCh" fx:id="ambientLightGraphs" animated="false" createSymbols="false" legendSide="RIGHT" prefHeight="280.0" prefWidth="450.0" title="Ambient Light" verticalGridLinesVisible="false" verticalZeroLineVisible="false" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                         <xAxis>
-                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="45.0" />
+                            <CategoryAxis animated="false" gapStartAndEnd="false" side="BOTTOM" tickLabelRotation="67.5" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis animated="false" forceZeroInRange="false" label="Ambient Light (%)" side="LEFT" />
