@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="100.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MsgError">
+<stylesheets>
+    <URL value="@WindowStyles.css" />
+</stylesheets>
+<VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="300.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+    <Text id="text" strokeType="OUTSIDE" strokeWidth="0.0" text="No valid time interval, please try again!" textAlignment="CENTER" wrappingWidth="300.0" AnchorPane.topAnchor="160.0">
+        <VBox.margin>
+            <Insets top="15.0" />
+        </VBox.margin>
+    </Text>
+</VBox>
+    <HBox alignment="BOTTOM_CENTER" layoutY="105.0" prefHeight="40.0" prefWidth="300.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="105.0">
+        <Button mnemonicParsing="false" onAction="#closeMsgError" prefWidth="60.0" text="OK">
+            <HBox.margin>
+                <Insets bottom="10.0" top="10.0" />
+            </HBox.margin>
+        </Button>
+    </HBox>
+
+</AnchorPane>
