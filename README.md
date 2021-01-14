@@ -35,15 +35,7 @@
 ---
 ## Software Design Concept
 ![Exam (1)](https://user-images.githubusercontent.com/59848681/99647376-fb31e200-2a51-11eb-9af9-630bfa4e4e16.png)
-
----
-## How to run in gradle  
-1.  you can setting the "mainClass" in build.gradle  
-![setting](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/classSetting.jpg?raw=true)  
-
-2.  type in "gradle run" to run the "mainClass" you set in Terminal  
-![toRun](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/runTheClass.jpg?raw=true)  
-
+  
 ---
 ## UI Front end Concept
 !.[UI Concept V1](https://github.com/ZHangSaxion/project_software_group_4/blob/main/temp_things_to_delete_at_the_end/UI%20Front%20end%20Concept.png?raw=true)
