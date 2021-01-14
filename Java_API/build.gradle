@@ -1,0 +1,45 @@
+/**
+ * The setting file for the gradle to get the environment well.
+ *
+ * @author Ziru Hang
+ * @version 1.0
+ * @since 02-12-2020
+ */
+plugins {
+    // Add and set the spring boot framework with its version.
+    id 'org.springframework.boot' version '2.3.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    // Declare java is in use.
+    id 'java'
+}
+
+repositories {
+    // Set the gradle to download and install libraries from maven's server.
+    mavenCentral()
+}
+
+dependencies {
+    // Using spring boot framework to build server.
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Add mySQL connection lib.
+    runtimeOnly 'mysql:mysql-connector-java'
+    // Setting test lib for spring boot.
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    // Set the test library to JUnit.
+    useJUnitPlatform()
+}
+
+// Setting the stage information to make the server be able run in Heroku successfully.
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+// Ask Heroku to run this application using the gradle of version to 6.7.1.
+wrapper{
+    gradleVersion = '6.7.1'
+}

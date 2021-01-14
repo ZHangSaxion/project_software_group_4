@@ -5,7 +5,7 @@ User interface
 
 Temperature in Celsius degrees
 ambient light 100% == 255
-pressure in millibars
+b_pressure in millibars
 location of the sensor
 
 map with the sensor of the location or a list where you could click on
